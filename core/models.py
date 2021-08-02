@@ -35,7 +35,7 @@ class BaseModel(models.Model):
 
     def my_delete(self):
         from datetime import datetime
-        self.delete_time_stamp = datetime.now()
+        self.delete_time_stamp = timezone.now()
         self.is_deleted = True
         self.save()
 
