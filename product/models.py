@@ -27,7 +27,7 @@ class Category(BaseModel, TimestampMixin):
             i.my_delete()
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.id}# {self.name}"
 
 
 class Discount(BaseModel, TimestampMixin):
@@ -82,6 +82,12 @@ class Discount(BaseModel, TimestampMixin):
             else:
                 raise AssertionError(_('discount price is bigger than product price'))
 
+    def __str__(self):
+        if self.is_percent:
+            return f"{self.id}# {self.percent}% , max = {self.max} , expire-date = {self.expire_date_time} , {self.is_expired()}"
+        else:
+            return f"{self.id}# {self.price}$ , max = {self.max} , expire-date = {self.expire_date_time} , {self.is_expired()}"
+
 
 class OffCode(Discount):
     code = models.CharField(
@@ -102,8 +108,11 @@ class Brand(BaseModel, TimestampMixin):
         max_length=30,
         verbose_name=_('brand name'),
         help_text=_('Enter the brand name'),
-        validators=[menu_item_name_validator],
+        # validators=[menu_item_name_validator],
     )
+
+    def __str__(self):
+        return f"{self.id}# {self.name}"
 
 
 class Image(BaseModel, TimestampMixin):
@@ -132,6 +141,9 @@ class Specification(BaseModel, TimestampMixin):
         help_text=_('Enter the Specification value'),
     )
 
+    def __str__(self):
+        return f"{self.id}# {self.name} : {self.value}"
+
 
 class VariableSpecification(BaseModel, TimestampMixin):
     name = models.CharField(
@@ -145,13 +157,16 @@ class VariableSpecification(BaseModel, TimestampMixin):
         help_text=_('Enter the Specification value'),
     )
 
+    def __str__(self):
+        return f"{self.id}# {self.name} : {self.value}"
+
 
 class MenuItem(BaseModel, TimestampMixin):
     name = models.CharField(
         max_length=30,
         verbose_name=_('menu item name'),
         help_text=_('Enter the Menu items name'),
-        validators=[menu_item_name_validator],
+        # validators=[menu_item_name_validator],
     )
 
     category = models.ForeignKey(
