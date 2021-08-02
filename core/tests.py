@@ -62,7 +62,11 @@ class TestModelTest(TestCase):
         self.assertNotIn(self.test_model2, TestModel.objects.all())
 
     def test_objects_all2(self):
-        self.test_model1.delete()
+        self.test_model1.my_delete()
+        print(self.test_model1.delete_time_stamp)
+        print(self.test_model1.create_time_stamp)
+        print(self.test_model1.modify_time_stamp)
+        print(self.test_model1.is_deleted)
         self.assertNotIn(self.test_model1, TestModel.objects.all())
 
     def test_objects_all3(self):

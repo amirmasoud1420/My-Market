@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 
 class BaseManager(models.Manager):
@@ -34,7 +35,7 @@ class BaseModel(models.Model):
 
     def my_delete(self):
         from datetime import datetime
-        self.delete_time_stamp = datetime.now()
+        self.delete_time_stamp = timezone.now()
         self.is_deleted = True
         self.save()
 
