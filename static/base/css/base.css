@@ -1,0 +1,11 @@
+:root{
+    --header : #f7fdc8;
+    --asli : #f7f3ed;
+    --footer : white;
+}
+
+.search_header{
+    width: 80%;
+    border-radius: 10rem;
+    margin: auto;
+}
