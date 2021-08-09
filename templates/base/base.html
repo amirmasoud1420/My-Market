@@ -4,6 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block Title %}{% endblock %}</title>
     <link rel="icon" type="image/gif/png" href="{% static 'base/img/logo_title.png' %}">
     <link rel="stylesheet" href="{% static 'base/css/bootstrap.min.css' %}">
@@ -21,9 +22,12 @@
         background-color: var(--asli);
     }
 
-    {% block ExtraStyle %}{% endblock %}
-</style>
 
+
+
+
+</style>
+{% block ExtraStyle %}{% endblock %}
 <body>
 <div class="container-fluid">
 
@@ -58,12 +62,12 @@
         </div>
 
     </div>
+
     {# header#}
 
     {#body#}
     {% block Body %}{% endblock %}
     {#body#}
-
 
 
     {#    footer#}

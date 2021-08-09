@@ -1,0 +1,31 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block Title %}{{ menu_item_variant.menu_item.name }}{% endblock %}
+{% block ExtraStyle %}
+<style>
+    .img-card {
+        height: 400px;
+        width: 100%;
+        text-align: center;
+        background-color: white;
+        margin-top: 1rem;
+
+    }
+</style>
+{% endblock %}
+{% block Body %}
+    <div class="row">
+        <div class="col-12 col-lg-4 ">
+            <div class="img-card">
+                <img style="height: 300px;width: auto" src="{% static menu_item_variant.menu_item.image_set.last.image %}">
+            </div>
+        </div>
+        <div class="col-12 col-lg-8">
+            <div style="margin-top: 1rem">
+            <h3>{{ menu_item_variant.menu_item.name }}</h3>
+            <p>{{ menu_item_variant.menu_item.description }} </p>
+                </div>
+        </div>
+    </div>
+{% endblock %}

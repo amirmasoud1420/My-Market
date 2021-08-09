@@ -235,9 +235,12 @@ class MenuItemVariant(BaseModel, TimestampMixin):
     )
 
     def final_price(self):
-        if self.discount.is_expired():
+        if self.discount:
+            if self.discount.is_expired():
+                return self.price
+            return self.discount.final_price(self.price)
+        else:
             return self.price
-        return self.discount.final_price(self.price)
 
     def __str__(self):
         return f"{self.id}#  {self.menu_item.category.name} > {self.menu_item.name} : {self.price} ------> final price = {self.final_price()}"

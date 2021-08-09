@@ -20,5 +20,5 @@ import My_Market.settings as settings
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
-                  path('product', include('product.urls')),
+                  path('product/', include('product.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
