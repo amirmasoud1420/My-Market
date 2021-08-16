@@ -21,4 +21,7 @@ import My_Market.settings as settings
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('product/', include('product.urls')),
+                  path('product-api/', include('product.api_urls')),
+                  path('customer-api/', include('customer.api_urls')),
+                  path('order-api/', include('order.api_urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

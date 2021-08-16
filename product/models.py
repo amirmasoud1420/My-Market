@@ -65,6 +65,7 @@ class Discount(BaseModel, TimestampMixin):
             return True
         if timezone.now() > self.expire_date_time:
             return True
+        return False
 
     def final_price(self, price):
         if self.is_percent:
@@ -80,7 +81,8 @@ class Discount(BaseModel, TimestampMixin):
             if price > self.price:
                 return price - self.price
             else:
-                raise AssertionError(_('discount price is bigger than product price'))
+                return 0
+                # raise AssertionError(_('discount price is bigger than product price'))
 
     def __str__(self):
         if self.is_percent:
@@ -200,6 +202,13 @@ class MenuItem(BaseModel, TimestampMixin):
     #     through_fields=('menu_item', 'variable_specifications'),
     #     related_name="variants",
     # )
+
+    def my_delete(self):
+        super().my_delete()
+        for i in self.menuitemvariant_set.all():
+            i.delete_time_stamp = timezone.now()
+            i.is_deleted = True
+            i.save()
 
     def __str__(self):
         return f"{self.id}#  {self.category.name} > {self.name} "

@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     'core',
     'product',
+    'customer',
+    'order',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'core.middleware.TimeMiddleware',
 ]
 
 ROOT_URLCONF = 'My_Market.urls'
@@ -142,3 +146,59 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'core.User'
+
+from logging import LogRecord
+
+
+def length_limit(record: LogRecord) -> bool:
+    return len(record.getMessage()) > 20
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'short': {
+            'format': '{levelname} : {asctime} {message}',
+            'style': '{',
+        },
+        'verbose': {
+            'format': '{levelname}: {message} at {module} (process: {process}, thread: {thread})',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'length_limit': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': length_limit,
+        },
+    },
+    'handlers': {
+        'my-console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'short',
+            'filters': ['length_limit'],
+        },
+        'my-file': {
+            'class': 'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': BASE_DIR / 'log/my-log.log',
+        },
+    },
+    'root': {
+        'handlers': ['my-console'],
+        'level': 'DEBUG'
+    },
+    'loggers': {
+        'project': {
+            'handlers': ['my-file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'project.developers': {
+            'handlers': ['my-file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}

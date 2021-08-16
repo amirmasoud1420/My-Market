@@ -10,6 +10,20 @@ class Customer(BaseModel, TimestampMixin):
         User,
         on_delete=models.CASCADE,
     )
+    image = models.FileField(
+        verbose_name=_('Customer image'),
+        help_text=_('customer image'),
+        upload_to='customer/customer/images/',
+        null=True,
+        blank=True,
+    )
+
+    def my_delete(self):
+        super().my_delete()
+        for i in self.address_set.all():
+            i.delete_time_stamp = timezone.now()
+            i.is_deleted = True
+            i.save()
 
 
 class Address(BaseModel, TimestampMixin):
@@ -17,7 +31,7 @@ class Address(BaseModel, TimestampMixin):
         Customer,
         on_delete=models.CASCADE,
     )
-    State = models.CharField(
+    state = models.CharField(
         verbose_name=_("The State"),
         help_text=_("The State"),
         max_length=50,
