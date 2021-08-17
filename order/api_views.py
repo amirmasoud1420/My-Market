@@ -1,5 +1,5 @@
 # Base View Sets
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from .serializers import *
 from .models import *
 
@@ -108,3 +108,12 @@ class OrderMenuItemShortApiViewSets(BaseApiViewSets):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class OrderMenuItemShortApiViewSets(OrderMenuItemAdminApiViewSets):
+    serializer_class = OrderMenuItemShortSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        customer = Customer.objects.get(user=self.request.user)
+        return OrderMenuItem.objects.filter(order__customer=customer)

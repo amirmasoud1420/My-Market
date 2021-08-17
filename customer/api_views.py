@@ -74,4 +74,4 @@ class AddressListForCustomerApiViewSets(BaseApiViewSets):
         customer = Customer.objects.get(user=self.request.user)
         return Address.objects.filter(owner=customer)
 
-    permission_classes = [permissions.IsAuthenticated | ISStaffListPermission]
+    permission_classes = [permissions.IsAuthenticated]
