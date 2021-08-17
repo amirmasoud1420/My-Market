@@ -2,6 +2,7 @@
 from rest_framework import viewsets, status, permissions
 from .serializers import *
 from .models import *
+from .my_permissions import *
 
 
 class BaseApiViewSets(viewsets.ModelViewSet):
@@ -13,6 +14,7 @@ class BaseApiViewSets(viewsets.ModelViewSet):
 class OrderApiViewSets(BaseApiViewSets):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
+    permission_classes = [permissions.IsAuthenticated, IsOrderOwner | ISStaffObj, OrderStatus]
 
     def perform_update(self, serializer):
         if serializer.validated_data['status']:
@@ -27,15 +29,27 @@ class OrderApiViewSets(BaseApiViewSets):
 
 
 # Order Short Api View Sets
-class OrderShortApiViewSets(BaseApiViewSets):
+class OrderListAdminApiViewSets(BaseApiViewSets):
     serializer_class = OrderShortSerializer
     queryset = Order.objects.all()
+    permission_classes = [permissions.IsAuthenticated, ISStaff]
+
+
+# Order Short Api View Sets
+class OrderShortApiViewSets(BaseApiViewSets):
+    serializer_class = OrderShortSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        customer = Customer.objects.get(user=self.request.user)
+        return Order.objects.filter(customer=customer)
 
 
 # Order MenuItem Api View Sets
 class OrderMenuItemApiViewSets(BaseApiViewSets):
     serializer_class = OrderMenuItemSerializer
     queryset = OrderMenuItem.objects.all()
+    permission_classes = [permissions.IsAuthenticated, IsOrderItemOwner | ISStaffObj, OrderMenuItemStatus]
 
     def perform_update(self, serializer):
         if serializer.validated_data['quantity']:
@@ -85,7 +99,7 @@ class OrderMenuItemApiViewSets(BaseApiViewSets):
 
 
 # Order MenuItem Short Api View Sets
-class OrderMenuItemShortApiViewSets(BaseApiViewSets):
+class OrderMenuItemAdminApiViewSets(BaseApiViewSets):
     serializer_class = OrderMenuItemShortSerializer
     queryset = OrderMenuItem.objects.all()
 
@@ -108,6 +122,8 @@ class OrderMenuItemShortApiViewSets(BaseApiViewSets):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    permission_classes = [permissions.IsAuthenticated, ISStaff]
 
 
 class OrderMenuItemShortApiViewSets(OrderMenuItemAdminApiViewSets):

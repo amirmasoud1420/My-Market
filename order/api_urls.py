@@ -8,6 +8,11 @@ urlpatterns = [
             'get': 'list',
             'post': 'create',
         }), name='order_list_api'),
+    path('order-admin-list/', OrderListAdminApiViewSets.as_view(
+        {
+            'get': 'list',
+            'post': 'create',
+        }), name='order_admin_list_api'),
     path('order-detail/<int:pk>', OrderApiViewSets.as_view(
         {
             'get': 'retrieve',
@@ -21,6 +26,11 @@ urlpatterns = [
             'get': 'list',
             'post': 'create',
         }), name='order_menu_item_list_api'),
+    path('order-menu-item-admin-list/', OrderMenuItemAdminApiViewSets.as_view(
+        {
+            'get': 'list',
+            'post': 'create',
+        }), name='order_menu_item_admin_list_api'),
     path('order-menu-item-detail/<int:pk>', OrderMenuItemApiViewSets.as_view(
         {
             'get': 'retrieve',

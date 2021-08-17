@@ -32,3 +32,9 @@ class UserListPermission(permissions.BasePermission):
                 return True
         if request.method == 'POST':
             return True
+
+
+class ISStaffObj(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_staff:
+            return True

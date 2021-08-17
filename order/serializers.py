@@ -16,7 +16,9 @@ class OrderSerializer(serializers.ModelSerializer):
     menu_item_variants = serializers.HyperlinkedRelatedField(view_name='menu_item_variant_detail_api',
                                                              many=True, read_only=True)
     customer = serializers.HyperlinkedRelatedField(view_name='customer_detail_api', read_only=True)
-    off_code = serializers.HyperlinkedRelatedField(view_name='offcode_detail_api', queryset=OffCode.objects.all())
+    off_code = serializers.HyperlinkedRelatedField(view_name='offcode_detail_api', queryset=OffCode.objects.all(),
+                                                   required=False,
+                                                   allow_null=True)
     is_deleted = serializers.ReadOnlyField()
     delete_time_stamp = serializers.ReadOnlyField()
 
@@ -35,7 +37,8 @@ class OrderShortSerializer(serializers.ModelSerializer):
     menu_item_variants = serializers.HyperlinkedRelatedField(view_name='menu_item_variant_detail_api',
                                                              many=True, read_only=True)
     customer = serializers.HyperlinkedRelatedField(view_name='customer_detail_api', queryset=Customer.objects.all())
-    off_code = serializers.HyperlinkedRelatedField(view_name='offcode_detail_api', queryset=OffCode.objects.all())
+    off_code = serializers.HyperlinkedRelatedField(view_name='offcode_detail_api', queryset=OffCode.objects.all(),
+                                                   required=False, allow_null=True)
 
     class Meta:
         model = Order

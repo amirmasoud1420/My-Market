@@ -15,7 +15,7 @@ class BaseApiViewSets(viewsets.ModelViewSet):
 class UserApiViewSets(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsUser | ISStaffListPermission]
+    permission_classes = [permissions.IsAuthenticated, IsUser | ISStaffObj]
 
 
 # User Short Api View Sets
@@ -29,7 +29,7 @@ class UserShortApiViewSets(viewsets.ModelViewSet):
 class CustomerApiViewSets(BaseApiViewSets):
     serializer_class = CustomerSerializer
     queryset = Customer.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsCustomer | ISStaffListPermission]
+    permission_classes = [permissions.IsAuthenticated, IsCustomer | ISStaffObj]
 
 
 # Customer Short Api View Sets
@@ -55,7 +55,7 @@ class CustomerShortApiViewSets(BaseApiViewSets):
 class AddressApiViewSets(BaseApiViewSets):
     serializer_class = AddressSerializer
     queryset = Address.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsOwner | ISStaffListPermission]
+    permission_classes = [permissions.IsAuthenticated, IsOwner | ISStaffObj]
 
 
 # Address Short Api View Sets
