@@ -27,7 +27,7 @@ class Category(BaseModel, TimestampMixin):
             i.my_delete()
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.id}# {self.name}"
 
 
 class Discount(BaseModel, TimestampMixin):
@@ -65,6 +65,7 @@ class Discount(BaseModel, TimestampMixin):
             return True
         if timezone.now() > self.expire_date_time:
             return True
+        return False
 
     def final_price(self, price):
         if self.is_percent:
@@ -80,7 +81,14 @@ class Discount(BaseModel, TimestampMixin):
             if price > self.price:
                 return price - self.price
             else:
-                raise AssertionError(_('discount price is bigger than product price'))
+                return 0
+                # raise AssertionError(_('discount price is bigger than product price'))
+
+    def __str__(self):
+        if self.is_percent:
+            return f"{self.id}# {self.percent}% , max = {self.max} , expire-date = {self.expire_date_time} , {self.is_expired()}"
+        else:
+            return f"{self.id}# {self.price}$ , max = {self.max} , expire-date = {self.expire_date_time} , {self.is_expired()}"
 
 
 class OffCode(Discount):
@@ -102,8 +110,11 @@ class Brand(BaseModel, TimestampMixin):
         max_length=30,
         verbose_name=_('brand name'),
         help_text=_('Enter the brand name'),
-        validators=[menu_item_name_validator],
+        # validators=[menu_item_name_validator],
     )
+
+    def __str__(self):
+        return f"{self.id}# {self.name}"
 
 
 class Image(BaseModel, TimestampMixin):
@@ -132,6 +143,9 @@ class Specification(BaseModel, TimestampMixin):
         help_text=_('Enter the Specification value'),
     )
 
+    def __str__(self):
+        return f"{self.id}# {self.name} : {self.value}"
+
 
 class VariableSpecification(BaseModel, TimestampMixin):
     name = models.CharField(
@@ -145,13 +159,16 @@ class VariableSpecification(BaseModel, TimestampMixin):
         help_text=_('Enter the Specification value'),
     )
 
+    def __str__(self):
+        return f"{self.id}# {self.name} : {self.value}"
+
 
 class MenuItem(BaseModel, TimestampMixin):
     name = models.CharField(
         max_length=30,
         verbose_name=_('menu item name'),
         help_text=_('Enter the Menu items name'),
-        validators=[menu_item_name_validator],
+        # validators=[menu_item_name_validator],
     )
 
     category = models.ForeignKey(
@@ -185,6 +202,13 @@ class MenuItem(BaseModel, TimestampMixin):
     #     through_fields=('menu_item', 'variable_specifications'),
     #     related_name="variants",
     # )
+
+    def my_delete(self):
+        super().my_delete()
+        for i in self.menuitemvariant_set.all():
+            i.delete_time_stamp = timezone.now()
+            i.is_deleted = True
+            i.save()
 
     def __str__(self):
         return f"{self.id}#  {self.category.name} > {self.name} "
@@ -220,9 +244,12 @@ class MenuItemVariant(BaseModel, TimestampMixin):
     )
 
     def final_price(self):
-        if self.discount.is_expired():
+        if self.discount:
+            if self.discount.is_expired():
+                return self.price
+            return self.discount.final_price(self.price)
+        else:
             return self.price
-        return self.discount.final_price(self.price)
 
     def __str__(self):
         return f"{self.id}#  {self.menu_item.category.name} > {self.menu_item.name} : {self.price} ------> final price = {self.final_price()}"

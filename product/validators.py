@@ -27,7 +27,7 @@ def off_code_validator(value):
 
 
 def menu_item_name_validator(value):
-    pattern = r"([a-zA-Z]){1,30}"
+    pattern = r"([a-zA-Z0-9]){1,30}"
     x = re.search(pattern, value)
     if x:
         if x.group() != value:

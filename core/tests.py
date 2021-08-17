@@ -1,7 +1,13 @@
 from django.test import TestCase
 
 # Create your tests here.
-from .models import TestModel
+from .models import TestModel, User
+from .validators import *
+from .utils import *
+
+"""
+BaseModel Test
+"""
 
 
 class TestModelTest(TestCase):
@@ -95,3 +101,63 @@ class TestModelTest(TestCase):
     def test_archive2(self):
         self.test_model1.delete()
         self.assertNotIn(self.test_model1, TestModel.objects.archive())
+
+
+'''
+Test Validators
+'''
+
+
+class PhoneValidatorTest(TestCase):
+    def test1(self):
+        self.assertRaises(ValidationError, phone_validator, '346456')
+
+    def test2(self):
+        self.assertRaises(ValidationError, phone_validator, '0911789')
+
+    def test3(self):
+        self.assertRaises(ValidationError, phone_validator, '+98911789')
+
+    def test4(self):
+        self.assertRaises(ValidationError, phone_validator, '0911789873999')
+
+    def test5(self):
+        self.assertRaises(ValidationError, phone_validator, '+98911789873999')
+
+    def test6(self):
+        self.assertRaises(ValidationError, phone_validator, '0911789873_')
+
+    def test7(self):
+        self.assertRaises(ValidationError, phone_validator, '09117898739')
+
+
+"""
+Core.User Test
+"""
+
+
+class UserTest(TestCase):
+    def setUp(self) -> None:
+        self.u1 = User.objects.create(
+            phone='+989117898739',
+        )
+
+    def test1(self):
+        self.assertEqual(self.u1.phone, '+989117898739')
+
+    def test2(self):
+        self.u1.is_staff = False
+        self.assertFalse(self.u1.is_staff)
+
+    def test3(self):
+        self.u1.set_password('1234')
+        self.u1.save()
+        self.assertTrue(self.u1.check_password('1234'))
+
+    def test4(self):
+        self.u1.first_name = 'amir'
+        self.assertEqual(self.u1.first_name, 'amir')
+
+    def test5(self):
+        self.u1.last_name = 'talebi'
+        self.assertEqual(self.u1.last_name, 'talebi')

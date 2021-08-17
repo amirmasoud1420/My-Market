@@ -1,8 +1,10 @@
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 
 # Create your models here.
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from .validators import *
 
 
 class BaseManager(models.Manager):
@@ -57,6 +59,33 @@ class TimestampMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+class MyUserBaseManager(UserManager):
+
+    def create(self, **kwargs):
+        return super().create(username=kwargs['phone'], **kwargs)
+
+    def create_superuser(self, username=None, email=None, password=None, **extra_fields):
+        username = extra_fields['phone']
+        return super().create_superuser(username, email, password, **extra_fields)
+
+    def create_user(self, username=None, email=None, password=None, **extra_fields):
+        username = extra_fields['phone']
+        return super().create_user(username, email, password, **extra_fields)
+
+
+class User(AbstractUser):
+    USERNAME_FIELD = 'phone'
+
+    phone = models.CharField(
+        verbose_name=_('Phone Number'),
+        help_text=_('Phone Number'),
+        unique=True,
+        max_length=13,
+        validators=[phone_validator],
+    )
+    objects = MyUserBaseManager()
 
 
 class TestModel(BaseModel, TimestampMixin):
