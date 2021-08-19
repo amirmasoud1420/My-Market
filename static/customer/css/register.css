@@ -1,0 +1,40 @@
+.my-form {
+    background-color: darkslategrey;
+    color: red;
+    margin: auto;
+    width: 400px;
+    text-align: center;
+    padding: 40px;
+    border-radius: 25px 0 25px 0;
+}
+#rl{
+    color: yellow;
+}
+form label {
+    display: none;
+}
+
+form p span {
+    display: none;
+}
+
+form input {
+    text-align: center;
+    width: 300px;
+    height: 35px;
+    border: 2px solid transparent;
+    border-radius: 5px 0 5px 0;
+}
+
+form button {
+    width: 300px;
+    height: 35px;
+    border: 2px solid transparent;
+    background-color: #ffc107;
+    border-radius: 5px;
+    margin-bottom: 2rem;
+}
+
+form button:hover {
+    background-color: #ffd592;
+}

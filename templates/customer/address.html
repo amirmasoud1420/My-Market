@@ -1,0 +1,24 @@
+{% load i18n %}
+<style>
+    .address-card {
+        width: 80%;
+        height: 100px;
+        background-color: darkslategray;
+        margin-bottom: 2rem;
+        margin-left: auto;
+        margin-right: auto;
+
+        border: solid 1px yellow;
+        border-radius: 10rem;
+        padding-top: 0.3rem;
+        padding-bottom: 0.3rem;
+    }
+</style>
+<div class="address-card">
+    <b style="text-align: center;color: white">{{ address.state }}-{{ address.city }}</b>
+    <hr style="color: yellow">
+    <a href="{% url 'customer:update_address' pk=address.id %}" class="btn btn-primary"
+       style="height: 30px">{% trans 'update' %}</a>
+    <a href="{% url 'customer:delete_address' pk=address.id %}" class="btn btn-danger"
+       style="height: 30px">{% trans 'delete' %}</a>
+</div>

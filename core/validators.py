@@ -8,6 +8,6 @@ def phone_validator(value):
     x = re.search(pattern, value)
     if x:
         if x.group() != value:
-            raise ValidationError(_('Invalid phone number'))
+            raise ValidationError(_('Invalid phone number (+989112223344)'))
     else:
-        raise ValidationError(_('Invalid phone number'))
+        raise ValidationError(_('Invalid phone number (+989112223344)'))

@@ -16,14 +16,20 @@ class Customer(BaseModel, TimestampMixin):
         upload_to='customer/customer/images/',
         null=True,
         blank=True,
+        default='customer/customer/images/default.jpg'
     )
 
     def my_delete(self):
         super().my_delete()
+        self.user.is_active = False
+        self.user.save()
         for i in self.address_set.all():
             i.delete_time_stamp = timezone.now()
             i.is_deleted = True
             i.save()
+
+    def __str__(self):
+        return f"{self.id}# {self.user.phone}"
 
 
 class Address(BaseModel, TimestampMixin):
@@ -58,3 +64,6 @@ class Address(BaseModel, TimestampMixin):
         verbose_name=_("Longitude"),
         help_text=_("longitude"),
     )
+
+    def __str__(self):
+        return f"{self.id}#{self.owner.user.phone} : {self.state}-{self.city}"

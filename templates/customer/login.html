@@ -1,0 +1,31 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block Title %}{% trans 'Login' %}{% endblock %}
+{% block ExtraHead %}
+    <link rel="stylesheet" href="{% static 'customer/css/register.css' %}">
+{% endblock %}
+{% block Body %}
+    <div class="my-form">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {#            {{ form.as_p }}#}
+
+            {#            <label for="username">{% trans 'username' %}</label>#}
+            {#            {{ form.username }}<br><br>#}
+
+            <input id="username" type="text" maxlength="50" name="username"
+                   placeholder={% trans 'PhoneNumber or Email' %}><br><br>
+
+            {#            <label for="password">{% trans 'password' %}</label>#}
+
+            <input id="password" type="password" name="password" placeholder={% trans 'password' %}><br><br>
+
+            {#            {{ form.password }}<br><br>#}
+            <button type="submit">{% trans 'Login' %}</button>
+        </form>
+        <p id="rl">{% trans "Don't have an account?  " %}<a
+                href={% url 'customer:customer_register' %}>{% trans 'Register' %}</a>
+        </p>
+    </div>
+{% endblock %}

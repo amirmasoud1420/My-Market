@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block Title %}{% trans 'Add Address' %}{% endblock %}
+{% block ExtraHead %}
+    <link rel="stylesheet" href="{% static 'customer/css/register.css' %}">
+{% endblock %}
+{% block ExtraStyle %}
+    <style>
+        form label {
+            display: block;
+            color: yellow;
+        }
+    </style>
+{% endblock %}
+{% block Body %}
+    <div class="my-form">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">{% trans 'add' %}</button>
+        </form>
+    </div>
+{% endblock %}

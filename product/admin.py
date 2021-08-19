@@ -8,7 +8,6 @@ class BaseAdmin(admin.ModelAdmin):
     exclude = ['delete_time_stamp']
 
 
-
 admin.site.register(Category, BaseAdmin)
 admin.site.register(Discount, BaseAdmin)
 admin.site.register(OffCode, BaseAdmin)
