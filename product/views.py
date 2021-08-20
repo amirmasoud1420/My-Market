@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.views import View, generic
@@ -47,4 +47,5 @@ class MenuItemVariantDetailView(generic.DetailView):
             'variants': variants,
             # 'default_variant': default_variant,
         }
-        return render(request, 'menu_item/menu_item_detail.html', context)
+        return redirect('menu_item_detail', pk=request.POST.get('select'))
+        # return render(request, 'menu_item/menu_item_detail.html', context)

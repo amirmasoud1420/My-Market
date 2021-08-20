@@ -205,12 +205,18 @@ class MenuItem(BaseModel, TimestampMixin):
         blank=True,
     )
 
-    # variants = models.ManyToManyField(
-    #     VariableSpecification,
-    #     through="MenuItemVariant",
-    #     through_fields=('menu_item', 'variable_specifications'),
-    #     related_name="variants",
-    # )
+    status = models.BooleanField(
+        verbose_name=_('variant status'),
+        help_text=_('has variant?'),
+        default=False,
+    )
+    variable_specification_name = models.CharField(
+        verbose_name=_('Variable Specification name'),
+        help_text=_('variable specification name'),
+        max_length=30,
+        null=True,
+        blank=True,
+    )
 
     def my_delete(self):
         super().my_delete()
@@ -220,7 +226,7 @@ class MenuItem(BaseModel, TimestampMixin):
             i.save()
 
     def __str__(self):
-        return f"{self.id}#  {self.category.name} > {self.name} "
+        return f"{self.id}#   {self.name} "
 
 
 class MenuItemVariant(BaseModel, TimestampMixin):
@@ -228,10 +234,10 @@ class MenuItemVariant(BaseModel, TimestampMixin):
         MenuItem,
         on_delete=models.CASCADE,
     )
-    variable_specifications = models.ManyToManyField(
-        VariableSpecification,
-        related_name='menu_item_variants',
-    )
+    # variable_specifications = models.ManyToManyField(
+    #     VariableSpecification,
+    #     related_name='menu_item_variants',
+    # )
     price = models.IntegerField(
         verbose_name=_('menu item price'),
         help_text=_('Enter the menu item price'),
@@ -251,6 +257,12 @@ class MenuItemVariant(BaseModel, TimestampMixin):
         verbose_name=_('menu item discount'),
         help_text=_('Enter the menu item discount'),
     )
+    variable_specification_value = models.CharField(
+        verbose_name=_('Variable Specification Value'),
+        help_text=_('variable specification value'),
+        max_length=30,
+        default=_('Not entered'),
+    )
 
     def final_price(self):
         if self.discount:
@@ -261,4 +273,4 @@ class MenuItemVariant(BaseModel, TimestampMixin):
             return self.price
 
     def __str__(self):
-        return f"{self.id}#  {self.menu_item.category.name} > {self.menu_item.name} : {self.price} ------> final price = {self.final_price()}"
+        return f"{self.id}#   {self.menu_item.name} : {self.price} ------> final price = {self.final_price()}"
