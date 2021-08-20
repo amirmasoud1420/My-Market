@@ -13,12 +13,16 @@ class Category(BaseModel, TimestampMixin):
         verbose_name=_('Name'),
         help_text=_('Category Name'),
     )
-
     parent = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
+    )
+    is_sub_category = models.BooleanField(
+        verbose_name=_('Is sub category?'),
+        help_text=_('Is sub category? or main?'),
+        default=False,
     )
 
     def my_delete(self):
@@ -171,9 +175,14 @@ class MenuItem(BaseModel, TimestampMixin):
         # validators=[menu_item_name_validator],
     )
 
-    category = models.ForeignKey(
+    # category = models.ForeignKey(
+    #     Category,
+    #     on_delete=models.CASCADE,
+    #     verbose_name=_('menu item category'),
+    #     help_text=_('Choose the menu item stock'),
+    # )
+    category = models.ManyToManyField(
         Category,
-        on_delete=models.CASCADE,
         verbose_name=_('menu item category'),
         help_text=_('Choose the menu item stock'),
     )
