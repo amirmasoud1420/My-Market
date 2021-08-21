@@ -37,3 +37,7 @@ def menu_item_name_validator(value):
         raise ValidationError(
             _('The menu item name is invalid!'))
 
+
+def rate_validator(value):
+    if value < 1:
+        raise ValidationError(_('Rate most be bigger than 1 '))

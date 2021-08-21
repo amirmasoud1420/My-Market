@@ -38,6 +38,10 @@ INSTALLED_APPS = [
 
     'rest_framework',
 
+    'ckeditor',
+    'ckeditor_uploader',
+    'taggit',
+
     'core',
     'product',
     'customer',
@@ -206,3 +210,11 @@ LOGGING = {
 LOGIN_URL = '/customer/login/'
 # LOGIN_REDIRECT_URL = '/customer/profile/'
 LOGIN_REDIRECT_URL = '/'
+
+CKEDITOR_UPLOAD_PATH = 'ck/'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+    },
+}
+TAGGIT_CASE_INSENSITIVE = True

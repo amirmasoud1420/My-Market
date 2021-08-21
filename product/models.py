@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 
 from core.models import *
 from .validators import *
+from ckeditor_uploader.fields import RichTextUploadingField
+from taggit.managers import TaggableManager
 
 
 class Category(BaseModel, TimestampMixin):
@@ -198,7 +200,7 @@ class MenuItem(BaseModel, TimestampMixin):
         Specification,
         related_name='menu_items',
     )
-    description = models.TextField(
+    description = RichTextUploadingField(
         verbose_name=_('menu item description'),
         help_text=_('Enter the menu item description'),
         null=True,
@@ -217,10 +219,19 @@ class MenuItem(BaseModel, TimestampMixin):
         null=True,
         blank=True,
     )
+    tags = TaggableManager(
+        verbose_name=_('Similar specification'),
+        help_text=_('for similar product'),
+        blank=True,
+    )
 
     def my_delete(self):
         super().my_delete()
         for i in self.menuitemvariant_set.all():
+            i.delete_time_stamp = timezone.now()
+            i.is_deleted = True
+            i.save()
+        for i in self.comment_set.all():
             i.delete_time_stamp = timezone.now()
             i.is_deleted = True
             i.save()
@@ -263,6 +274,24 @@ class MenuItemVariant(BaseModel, TimestampMixin):
         max_length=30,
         default=_('Not entered'),
     )
+    likes = models.ManyToManyField(
+        User,
+        blank=True,
+        verbose_name=_('Likes'),
+        related_name='menu_item_variants_likes',
+    )
+    un_likes = models.ManyToManyField(
+        User,
+        blank=True,
+        verbose_name=_('Un Likes'),
+        related_name='menu_item_variants_un_likes',
+    )
+
+    def total_likes(self):
+        return self.likes.count()
+
+    def total_un_likes(self):
+        return self.un_likes.count()
 
     def final_price(self):
         if self.discount:
@@ -274,3 +303,56 @@ class MenuItemVariant(BaseModel, TimestampMixin):
 
     def __str__(self):
         return f"{self.id}#   {self.menu_item.name} : {self.price} ------> final price = {self.final_price()}"
+
+
+class Comment(BaseModel, TimestampMixin):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name=_('User'),
+    )
+    menu_item = models.ForeignKey(
+        MenuItem,
+        on_delete=models.CASCADE,
+        verbose_name=_('Product'),
+    )
+    comment = models.TextField(
+        verbose_name=_('Comment')
+    )
+    rate = models.PositiveIntegerField(default=1)
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='comment_childes',
+    )
+    is_reply = models.BooleanField(
+        default=False,
+    )
+    likes = models.ManyToManyField(
+        User,
+        blank=True,
+        verbose_name=_('Likes'),
+        related_name='comments_likes',
+    )
+    un_likes = models.ManyToManyField(
+        User,
+        blank=True,
+        verbose_name=_('Un Likes'),
+        related_name='comments_un_likes',
+    )
+
+    def total_likes(self):
+        return self.likes.count()
+
+    def total_un_likes(self):
+        return self.un_likes.count()
+
+    def my_delete(self):
+        super().my_delete()
+        for i in self.comment_childes.all():
+            i.my_delete()
+
+    def __str__(self):
+        return f"{self.id}# {self.user.phone} : {self.menu_item.name}"

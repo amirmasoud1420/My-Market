@@ -27,6 +27,10 @@ class MenuItemVariantAdmin(BaseAdmin):
     list_editable = ('count', 'price')
 
 
+class CommentAdmin(BaseAdmin):
+    list_display = ('user', 'create_time_stamp', 'rate')
+
+
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Discount, BaseAdmin)
 admin.site.register(OffCode, BaseAdmin)
@@ -36,3 +40,4 @@ admin.site.register(Specification, BaseAdmin)
 admin.site.register(VariableSpecification, BaseAdmin)
 admin.site.register(MenuItem, MenuItemAdmin)
 admin.site.register(MenuItemVariant, MenuItemVariantAdmin)
+admin.site.register(Comment, CommentAdmin)

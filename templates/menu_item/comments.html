@@ -1,0 +1,32 @@
+{% for i in comments %}
+    <div>
+        <div class="card bg-success text-white" style="width: 98%;margin-bottom: 1rem;padding: 3px;text-align: right">
+            <div class="row" style="">
+
+                <div class="col-4 col-sm-3 col-md-2">
+                    <div class=" comment-rating">
+                        <i class="fa fa-star{% if i.rate < 1 %}-o empty {% endif %}"></i>
+                        <i class="fa fa-star{% if i.rate < 2 %}-o empty {% endif %}"></i>
+                        <i class="fa fa-star{% if i.rate < 3 %}-o empty {% endif %}"></i>
+                        <i class="fa fa-star{% if i.rate < 4 %}-o empty {% endif %}"></i>
+                        <i class="fa fa-star{% if i.rate < 5 %}-o empty {% endif %}"></i>
+                    </div>
+                </div>
+                <div class="col-8 col-sm-9 col-md-10">
+                    <b style="margin-right: 1rem;margin-top:1rem;color: lightcyan">{{ i.user.first_name }}&nbsp;&nbsp;{{ i.user.last_name }}</b>
+                </div>
+
+            </div>
+            <hr style="color: white">
+            <div class="row" style="direction: rtl">
+                <p style="font-size: 1.3rem">{{ i.comment }}</p>
+            </div>
+            {% include 'menu_item/reply_form.html' with comment=i menu_item_variant=menu_item_variant %}
+            {% include 'menu_item/reply_comments.html' with comments=i.comment_childes.all menu_item_variant=menu_item_variant %}
+
+        </div>
+
+    </div>
+{% endfor %}
+
+

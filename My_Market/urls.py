@@ -27,4 +27,5 @@ urlpatterns = [
                   path('product-api/', include('product.api_urls')),
                   path('customer-api/', include('customer.api_urls')),
                   path('order-api/', include('order.api_urls')),
+                  path('ckeditor/', include('ckeditor_uploader.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

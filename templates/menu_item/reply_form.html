@@ -1,0 +1,11 @@
+{% load i18n %}
+<form method="post" action="{% url 'menu_item_comment_reply' menu_item_variant.id comment.id %}">
+    {% csrf_token %}
+    <textarea name="comment" rows="2" class="form-control" style="direction: rtl"
+              placeholder="{% trans 'reply...' %}"
+              required oninvalid="setCustomValidity('{% trans 'this field is required' %}')"></textarea>
+    <div class="mt-2">
+        <button type="submit" class="btn btn-primary"
+                {% if not user.is_authenticated %}disabled{% endif %}>{% trans 'Reply' %}</button>
+    </div>
+</form>

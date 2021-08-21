@@ -1,0 +1,9 @@
+{% if user.is_authenticated %}
+    {% if is_like %}
+        <a href="{% url 'menu_item_like' menu_item_variant.id %}"
+           class="btn btn-danger {% if is_dislike %} disabled {% endif %}">Like</a>
+    {% else %}
+        <a href="{% url 'menu_item_like' menu_item_variant.id %}"
+           class="btn btn-info {% if is_dislike %} disabled {% endif %}">Like</a>
+    {% endif %}
+{% endif %}
