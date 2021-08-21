@@ -15,6 +15,11 @@
             <div class="row" style="direction: rtl">
                 <p style="font-size: 1.3rem">{{ i.comment }}</p>
             </div>
+            <div class="row">
+                {% include 'menu_item/comment_like.html' with comment=i %}
+                {% include 'menu_item/comment_dislike.html' with comment=i %}
+
+            </div>
             {% include 'menu_item/reply_form.html' with comment=i menu_item_variant=menu_item_variant %}
             {% include 'menu_item/reply_comments.html' with comments=i.comment_childes.all menu_item_variant=menu_item_variant %}
 

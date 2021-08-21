@@ -35,6 +35,7 @@ class MenuItemVariantDetailView(View):
         is_dislike = False
         if menu_item_variant.un_likes.filter(id=request.user.id).exists():
             is_dislike = True
+
         variants = menu_item_variant.menu_item.menuitemvariant_set.all()
         similar_product = menu_item_variant.menu_item.tags.similar_objects()[:5]
 
@@ -149,3 +150,35 @@ class MenuItemCommentReplyView(View):
         else:
             messages.error(self.request, _('The submission was failed!'), 'danger')
         return redirect('menu_item_detail', pk=kwargs['pk'])
+
+
+class CommentLikeView(View):
+    def get(self, request, *args, **kwargs):
+        url = request.META.get('HTTP_REFERER')
+        is_like = False
+        comment = get_object_or_404(Comment, id=kwargs['pk'])
+        if comment.likes.filter(id=request.user.id).exists():
+            comment.likes.remove(request.user)
+            is_like = False
+            messages.success(self.request, _('Like Removed!'), 'warning')
+        else:
+            comment.likes.add(request.user)
+            is_like = True
+            messages.success(self.request, _('Thank you for like!'), 'success')
+        return redirect(url)
+
+
+class CommentUnLikeView(View):
+    def get(self, request, *args, **kwargs):
+        url = request.META.get('HTTP_REFERER')
+        is_dislike = False
+        comment = get_object_or_404(Comment, id=kwargs['pk'])
+        if comment.un_likes.filter(id=request.user.id).exists():
+            comment.un_likes.remove(request.user)
+            is_dislike = False
+            messages.success(self.request, _('dislike Removed!'), 'info')
+        else:
+            comment.un_likes.add(request.user)
+            is_dislike = True
+            messages.success(self.request, _('you disliked this comment'), 'danger')
+        return redirect(url)

@@ -1,0 +1,9 @@
+{% if user.is_authenticated %}
+    {% if user in comment.likes.all %}
+        <a href="{% url 'comment_like' comment.id %}"
+           class="btn btn-danger {% if user  in comment.un_likes.all %} disabled {% endif %}">Like</a>
+    {% else %}
+        <a href="{% url 'comment_like' comment.id %}"
+           class="btn btn-info {% if user  in comment.un_likes.all %} disabled {% endif %}">Like</a>
+    {% endif %}
+{% endif %}

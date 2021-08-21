@@ -17,6 +17,11 @@
                 </div>
 
             </div>
+            <div class="row">
+                {% include 'menu_item/comment_like.html' with comment=i %}
+                {% include 'menu_item/comment_dislike.html' with comment=i %}
+
+            </div>
             <hr style="color: white">
             <div class="row" style="direction: rtl">
                 <p style="font-size: 1.3rem">{{ i.comment }}</p>
