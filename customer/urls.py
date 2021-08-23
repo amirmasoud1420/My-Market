@@ -13,4 +13,5 @@ urlpatterns = [
     path('update-address/<int:pk>/', AddressUpdateView.as_view(), name='update_address'),
     path('delete-address/<int:pk>/', AddressDeleteView.as_view(), name='delete_address'),
     path('change-password/', ChangePasswordView.as_view(), name='change_password'),
+    path('favorites/', FavoritesView.as_view(), name='favorites'),
 ]

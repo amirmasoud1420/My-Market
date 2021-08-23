@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, SuccessURLAllowedHostsMixin
 from django.core.files.storage import default_storage
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from django.views import generic, View
 from .forms import *
@@ -10,7 +10,7 @@ from .models import *
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth import authenticate, login, logout, forms, update_session_auth_hash
 from django.contrib import messages
-
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -112,7 +112,8 @@ class CustomerProfileUpdateView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         user_form = UserUpdateForm(request.POST, instance=request.user)
-        customer_form = CustomerUpdateForm(request.POST, instance=Customer.objects.get(user=request.user))
+        customer_form = CustomerUpdateForm(request.POST, request.FILES,
+                                           instance=Customer.objects.get(user=request.user))
         if user_form.is_valid() and customer_form.is_valid():
             customer_form.save()
             user_form.save()
@@ -191,3 +192,13 @@ class ChangePasswordView(LoginRequiredMixin, View):
         else:
             messages.error(self.request, _('Password Change failed'), 'danger')
             return redirect('customer:change_password')
+
+
+class FavoritesView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        customer = get_object_or_404(Customer, user=request.user)
+        favorites = customer.favorites.all()
+        paginator = Paginator(favorites, 12)
+        page_num = request.GET.get('page')
+        page_obj = paginator.get_page(page_num)
+        return render(request, 'customer/favorites.html', {'favorites': page_obj})

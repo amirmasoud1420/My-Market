@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+{% load static %}
+{% block Title %}{% trans 'Favorites' %}{% endblock %}
+{% block ExtraStyle %}
+    <style>
+        .pag {
+            margin-top: 5rem;
+        }
+    </style>
+{% endblock %}
+{% block Body %}
+    <div class="row">
+        {% for i in favorites %}
+            <div style="margin-top: 1rem;margin-bottom: 1rem" class="col-12 col-md-6  col-lg-4 col-xl-3">
+                {% include 'menu_item/menu_item_card.html' with menu_item=i.menuitemvariant_set.last %}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="row pag">
+        {% include 'base/pagination.html' with menu_items=favorites %}
+    </div>
+{% endblock %}

@@ -1,6 +1,4 @@
 from django.db import models
-
-# Create your models here.
 from django.utils.translation import gettext_lazy as _
 
 from core.models import *
@@ -8,6 +6,10 @@ from .validators import *
 from ckeditor_uploader.fields import RichTextUploadingField
 from taggit.managers import TaggableManager
 from django.db.models import Avg, Min, Max
+from customer.models import *
+
+
+# Create your models here.
 
 
 class Category(BaseModel, TimestampMixin):
@@ -89,7 +91,6 @@ class Discount(BaseModel, TimestampMixin):
                 return price - self.price
             else:
                 return 0
-                # raise AssertionError(_('discount price is bigger than product price'))
 
     def __str__(self):
         if self.is_percent:
@@ -175,15 +176,9 @@ class MenuItem(BaseModel, TimestampMixin):
         max_length=30,
         verbose_name=_('menu item name'),
         help_text=_('Enter the Menu items name'),
-        # validators=[menu_item_name_validator],
+
     )
 
-    # category = models.ForeignKey(
-    #     Category,
-    #     on_delete=models.CASCADE,
-    #     verbose_name=_('menu item category'),
-    #     help_text=_('Choose the menu item stock'),
-    # )
     category = models.ManyToManyField(
         Category,
         verbose_name=_('menu item category'),
@@ -225,6 +220,11 @@ class MenuItem(BaseModel, TimestampMixin):
         help_text=_('for similar product'),
         blank=True,
     )
+    favorites_customers = models.ManyToManyField(
+        Customer,
+        blank=True,
+        related_name='favorites',
+    )
 
     def my_delete(self):
         super().my_delete()
@@ -253,10 +253,7 @@ class MenuItemVariant(BaseModel, TimestampMixin):
         MenuItem,
         on_delete=models.CASCADE,
     )
-    # variable_specifications = models.ManyToManyField(
-    #     VariableSpecification,
-    #     related_name='menu_item_variants',
-    # )
+
     price = models.IntegerField(
         verbose_name=_('menu item price'),
         help_text=_('Enter the menu item price'),

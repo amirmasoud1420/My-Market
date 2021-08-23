@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View, generic
 from django.utils.translation import gettext_lazy as _
@@ -5,6 +6,7 @@ from .models import *
 from django.contrib import messages
 from .forms import *
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -26,21 +28,45 @@ class MenuItemCardView(generic.DetailView):
 
 
 class MenuItemCategoryView(generic.DetailView):
-    template_name = 'menu_item/menu_item_list.html'
-    model = Category
-    context_object_name = 'category'
+    def get(self, request, *args, **kwargs):
+        category = get_object_or_404(Category, id=kwargs['pk'])
+        menu_items = category.menuitem_set.all()
+        paginator = Paginator(menu_items, 12)
+        page_num = request.GET.get('page')
+        page_obj = paginator.get_page(page_num)
+        return render(request, 'menu_item/menu_item_list.html', {'menu_items': page_obj})
+
+
+# class MenuItemCategoryView(generic.DetailView):
+#     template_name = 'menu_item/menu_item_list.html'
+#     model = Category
+#     context_object_name = 'category'
+#
+#     def get(self, request, *args, **kwargs):
+#         category = get_object_or_404(Category, id=kwargs['pk'])
+#         menu_item = MenuItem.objects.filter(category=category)
+#         paginator = Paginator(menu_item, 2)
+#         page_num = request.GET['page']
+#         page_obj = paginator.get_page(page_num)
+#         return super().get(request, *args, **kwargs)
 
 
 class MenuItemVariantDetailView(View):
 
     def get(self, request, *args, **kwargs):
         menu_item_variant = get_object_or_404(MenuItemVariant, id=kwargs['pk'])
+
         is_like = False
         if menu_item_variant.likes.filter(id=request.user.id).exists():
             is_like = True
+
         is_dislike = False
         if menu_item_variant.un_likes.filter(id=request.user.id).exists():
             is_dislike = True
+
+        is_favorites = False
+        if menu_item_variant.menu_item.favorites_customers.filter(user=request.user).exists():
+            is_favorites = True
 
         variants = menu_item_variant.menu_item.menuitemvariant_set.all()
         similar_product = menu_item_variant.menu_item.tags.similar_objects()[:5]
@@ -58,17 +84,25 @@ class MenuItemVariantDetailView(View):
             'comment_form': comment_form,
             'comments': comments,
             'reply_from': reply_from,
+            'is_favorites': is_favorites,
         }
         return render(request, 'menu_item/menu_item_detail.html', context)
 
     def post(self, request, *args, **kwargs):
         menu_item_variant = get_object_or_404(MenuItemVariant, id=request.POST.get('select'))
+
         is_like = False
         if menu_item_variant.likes.filter(id=request.user.id).exists():
             is_like = True
+
         is_dislike = False
         if menu_item_variant.un_likes.filter(id=request.user.id).exists():
             is_dislike = True
+
+        is_favorites = False
+        if menu_item_variant.menu_item.favorites_customers.filter(user=request.user).exists():
+            is_favorites = True
+
         variants = menu_item_variant.menu_item.menuitemvariant_set.all()
         similar_product = menu_item_variant.menu_item.tags.similar_objects()[:5]
 
@@ -85,6 +119,7 @@ class MenuItemVariantDetailView(View):
             'comment_form': comment_form,
             'comments': comments,
             'reply_from': reply_from,
+            'is_favorites': is_favorites,
         }
         return redirect('menu_item_detail', pk=request.POST.get('select'))
 
@@ -215,3 +250,20 @@ class ProductSearchView(View):
         else:
             messages.error(self.request, _('Search Failed!'), 'danger')
             return redirect(url)
+
+
+class FavoritesAddView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        url = request.META.get('HTTP_REFERER')
+        menu_item = get_object_or_404(MenuItem, id=kwargs['pk'])
+        c = Customer.objects.get(user=request.user)
+        is_favorites = False
+        if menu_item.favorites_customers.filter(user=request.user).exists():
+            menu_item.favorites_customers.remove(c)
+            is_favorites = False
+            messages.success(self.request, _("Remove from your favorites"), 'warning')
+        else:
+            menu_item.favorites_customers.add(c)
+            is_favorites = True
+            messages.success(self.request, _("Add into your favorites"), 'success')
+        return redirect(url)

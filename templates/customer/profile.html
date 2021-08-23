@@ -91,7 +91,11 @@
             margin-top: 20px !important;
         }
 
-
+        .cus-btn {
+            width: 200px;
+            margin: auto;
+            margin-top: 4rem;
+        }
     </style>
 {% endblock %}
 {% block Body %}
@@ -121,14 +125,7 @@
                             <p class="profile-desc-text">{{ customer.user.phone }}</p>
                             <h4 class="profile-desc-title">{% trans 'Email' %}</h4>
                             <p class="profile-desc-text">{{ customer.user.email }}</p>
-                            <a class="btn btn-primary" style="margin: auto"
-                               href={% url 'customer:customer_profile_update' %}>{% trans 'Update' %}</a>
-                            <p></p>
-                            <a class="btn btn-primary" style="margin: auto"
-                               href={% url 'customer:add_address' %}>{% trans 'Add Address' %}</a>
-                            <p></p>
-                            <a class="btn btn-primary" style="margin: auto;text-align: center"
-                               href={% url 'customer:change_password' %}>{% trans 'Change Password' %}</a>
+
                         </div>
 
                     </div>
@@ -139,12 +136,28 @@
             <div class="col-md-9">
                 <div class="profile-content">
                     <div class="row">
+
                         <div class="col-12 col-lg-6" style="text-align: center;">
                             {% for add in customer.address_set.all %}
                                 {% include 'customer/address.html' with address=add %}
                             {% endfor %}
                         </div>
+
                         <div class="col-12 col-lg-6">
+                            <div class="row">
+                                <a class="btn btn-success cus-btn" style="margin: auto"
+                                   href={% url 'customer:customer_profile_update' %}>{% trans 'Update' %}</a>
+                                <p></p>
+                                <a class="btn btn-success cus-btn" style="margin: auto"
+                                   href={% url 'customer:add_address' %}>{% trans 'Add Address' %}</a>
+                                <p></p>
+                                <a class="btn btn-success cus-btn" style="margin: auto;text-align: center"
+                                   href={% url 'customer:change_password' %}>{% trans 'Change Password' %}</a>
+                                <p></p>
+                                <a class="btn btn-success cus-btn" style="margin: auto;text-align: center"
+                                   href="{% url 'customer:favorites' %}">favorites</a>
+                            </div>
+
 
                         </div>
                     </div>

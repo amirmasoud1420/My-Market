@@ -2,7 +2,13 @@
 {% load i18n %}
 {% load product_extras %}
 {% block Title %}{% trans 'Produt List' %}{% endblock %}
-
+{% block ExtraStyle %}
+    <style>
+        .pag {
+            margin-top: 5rem;
+        }
+    </style>
+{% endblock %}
 {% block Body %}
     <div class="row">
         <div class="col-1"></div>
@@ -12,5 +18,8 @@
             </div>
         </div>
         <div class="col-1"></div>
+    </div>
+    <div class="row pag">
+        {% include 'base/pagination.html' with menu_items=menu_items %}
     </div>
 {% endblock %}
