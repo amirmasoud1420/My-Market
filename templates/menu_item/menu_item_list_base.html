@@ -1,0 +1,16 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+{% load product_extras %}
+{% block Title %}{% trans 'Produt List' %}{% endblock %}
+
+{% block Body %}
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <div class="row">
+                {% block Products %}{% endblock %}
+            </div>
+        </div>
+        <div class="col-1"></div>
+    </div>
+{% endblock %}

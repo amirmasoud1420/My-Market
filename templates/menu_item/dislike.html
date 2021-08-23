@@ -1,0 +1,17 @@
+{% if user.is_authenticated %}
+    {% if is_dislike %}
+{#        <a href="{% url 'menu_item_unlike' menu_item_variant.id %}"#}
+{#           class="btn btn-danger {% if is_like %} disabled {% endif %}">disLike</a>#}
+        <a href="{% url 'menu_item_unlike' menu_item_variant.id %}"
+           class="btn like {% if is_like %} disabled {% endif %}"><i class="fa  fa-thumbs-down"
+                                                                                          style="color: red;font-size: 30px">&nbsp;
+            &nbsp;{{ menu_item_variant.total_un_likes }}</i></a>
+    {% else %}
+{#        <a href="{% url 'menu_item_unlike' menu_item_variant.id %}"#}
+{#           class="btn btn-info {% if is_like %} disabled {% endif %}">disLike</a>#}
+        <a href="{% url 'menu_item_unlike' menu_item_variant.id %}"
+           class="btn like {% if is_like %} disabled {% endif %}"><i class="fa  fa-thumbs-o-down"
+                                                                                          style="color: black;font-size: 25px">&nbsp;
+            &nbsp;{{ menu_item_variant.total_un_likes }}</i></a>
+    {% endif %}
+{% endif %}

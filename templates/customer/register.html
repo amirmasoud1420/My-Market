@@ -1,0 +1,30 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block Title %}{% trans 'Register' %}{% endblock %}
+{% block ExtraHead %}
+    <link rel="stylesheet" href="{% static 'customer/css/register.css' %}">
+{% endblock %}
+{% block Body %}
+    <div class="my-form">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            {#        <label for="phone">{% trans 'Phone Number ' %}</label>#}
+            {#        {{ form.phone }}<br><br>#}
+            {#        <label for="email">{% trans 'Email  ' %}</label>#}
+            {#        {{ form.email }}<br><br>#}
+            {#        <label for="first_name">{% trans 'First Name  ' %}</label>#}
+            {#        {{ form.first_name }}<br><br>#}
+            {#        <label for="last_name">{% trans 'Last Name  ' %}</label>#}
+            {#        {{ form.last_name }}<br><br>#}
+            {#        <label for="password_1">{% trans 'password  ' %}</label>#}
+            {#        {{ form.password_1 }}<br><br>#}
+            {#        <label for="password_2">{% trans 'confirm password  ' %}</label>#}
+            {#        {{ form.password_2 }}<br><br>#}
+            <button type="submit">{% trans 'Register' %}</button>
+        </form>
+        <p id="rl">{% trans "Do you have an account?  " %}<a
+                href={% url 'customer:customer_login' %}>{% trans 'Login' %}</a>
+    </div>
+{% endblock %}

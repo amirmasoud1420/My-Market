@@ -2,30 +2,75 @@
 {% load static %}
 {% load i18n %}
 {% block Title %}{{ menu_item_variant.menu_item.name }}{% endblock %}
+{% block ExtraHead %}
+    <link rel="stylesheet" href="{% static 'product/css/comment.css' %}">
+{% endblock %}
 {% block ExtraStyle %}
-<style>
-    .img-card {
-        height: 400px;
-        width: 100%;
-        text-align: center;
-        background-color: white;
-        margin-top: 1rem;
+    <style>
+        .img-card {
+            height: 400px;
+            width: 100%;
+            text-align: center;
+            background-color: white;
+            margin-top: 1rem;
 
-    }
-</style>
+        }
+    </style>
 {% endblock %}
 {% block Body %}
     <div class="row">
         <div class="col-12 col-lg-4 ">
             <div class="img-card">
-                <img style="height: 300px;width: auto" src="{% static menu_item_variant.menu_item.image_set.last.image %}">
+                <img style="height: 300px;width: auto"
+                     src="{% static menu_item_variant.menu_item.image_set.last.image %}">
             </div>
         </div>
         <div class="col-12 col-lg-8">
             <div style="margin-top: 1rem">
-            <h3>{{ menu_item_variant.menu_item.name }}</h3>
-            <p>{{ menu_item_variant.menu_item.description }} </p>
-                </div>
+                <h3>{{ menu_item_variant.menu_item.name }}</h3>
+                <h4>{% trans 'rate average :' %}&nbsp;&nbsp;{{ menu_item_variant.menu_item.average_rate }}&nbsp;(5)</h4>
+                {% include 'menu_item/like.html' with menu_item_variant=menu_item_variant  is_like=is_like is_dislike=is_dislike %}
+                {% include 'menu_item/dislike.html' with menu_item_variant=menu_item_variant  is_like=is_like is_dislike=is_dislike %}
+
+                {#                <p>Likes:<small>{{ menu_item_variant.total_likes }}</small></p>#}
+                {#                <p>Dislikes:<small>{{ menu_item_variant.total_un_likes }}</small></p>#}
+                {% if menu_item_variant.menu_item.status %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <p>{{ menu_item_variant.menu_item.variable_specification_name }}:
+                            {% for i in variants %}
+
+                                <small>{{ i.variable_specification_value }}</small>
+                                <input type="radio" value="{{ i.id }}" name="select"
+                                       {% if i == menu_item_variant %}checked{% endif %} onchange="this.form.submit();">
+
+                            {% endfor %}</p>
+                    </form>
+                {% endif %}
+                {% include 'menu_item/price.html' with menu_item=menu_item_variant %}
+                {% include 'order/add_to_cart.html' with menu_item_variant=menu_item_variant %}
+                <p>{{ menu_item_variant.menu_item.description|safe }} </p>
+
+
+            </div>
         </div>
+
+
+    </div>
+
+
+    <hr>
+    <div class="row">
+        {% for i in similar_product %}
+            <div style="margin-top: 1rem;margin-bottom: 1rem" class="col-12 col-md-6  col-lg-4 col-xl-3">
+                {% include 'menu_item/menu_item_card.html' with menu_item=i.menuitemvariant_set.last %}
+
+            </div>
+        {% endfor %}
+    </div>
+    <div class="row" style="margin-top: 3rem;padding: 10px;text-align: center">
+
+        {% include 'menu_item/comment_form.html' with menu_item_variant=menu_item_variant comment_form=comment_form %}
+        {% include 'menu_item/comments.html' with comments=comments menu_item_variant=menu_item_variant %}
     </div>
 {% endblock %}

@@ -43,6 +43,11 @@ class Order(BaseModel, TimestampMixin):
             'menu_item_variant',
         ),
     )
+    paid_price = models.IntegerField(
+        verbose_name=_('Paid Price'),
+        null=True,
+        blank=True,
+    )
 
     def pure_price(self):
         price = 0
@@ -57,6 +62,9 @@ class Order(BaseModel, TimestampMixin):
             return final_price
         else:
             return price
+
+    def __str__(self):
+        return f"{self.id}# {self.customer.user.phone} : {self.status} : {self.final_price()}"
 
 
 class OrderMenuItem(BaseModel, TimestampMixin):
@@ -77,3 +85,9 @@ class OrderMenuItem(BaseModel, TimestampMixin):
         help_text=_('quantity'),
         validators=[quantity_validator]
     )
+
+    def final_price(self):
+        return self.menu_item_variant.final_price() * self.quantity
+
+    def __str__(self):
+        return f"{self.id}# {self.order}: {self.menu_item_variant} : {self.quantity}"

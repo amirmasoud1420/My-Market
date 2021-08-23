@@ -1,0 +1,11 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+{% load static %}
+{% block Title %}{% trans 'Home' %}{% endblock %}
+{% block Body %}
+{#    <form method="post" action="{% url 'product_search' %}">#}
+{#        {% csrf_token %}#}
+{#        {{ search_form }}#}
+{#        <button type="submit">{% trans 'Search' %}</button>#}
+{#    </form>#}
+{% endblock %}

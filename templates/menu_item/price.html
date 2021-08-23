@@ -1,0 +1,15 @@
+{% load i18n %}
+{% if menu_item.discount %}
+    {% if not menu_item.discount.is_expired %}
+        <p style="text-decoration: line-through;color: red">
+            {% trans 'Price : ' %}{{ menu_item.price }}{% trans ' Toman' %}</p>
+        <p>{% trans 'Price : ' %}{{ menu_item.final_price }}{% trans ' Toman' %}</p>
+    {% else %}
+        <p>{% trans 'Price : ' %}{{ menu_item.price }}{% trans ' Toman' %}</p>
+        <p><br></p>
+    {% endif %}
+
+{% else %}
+    <p>{% trans 'Price : ' %}{{ menu_item.price }}{% trans ' Toman' %}</p>
+    <p><br></p>
+{% endif %}

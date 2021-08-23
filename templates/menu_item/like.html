@@ -1,0 +1,26 @@
+<style>
+    .like {
+        width: auto;
+        margin-left: 2rem;
+    }
+
+
+
+</style>
+{% if user.is_authenticated %}
+    {% if is_like %}
+{#                <a href="{% url 'menu_item_like' menu_item_variant.id %}"#}
+{#                   class="btn btn-danger {% if is_dislike %} disabled {% endif %}">Like</a>#}
+        <a href="{% url 'menu_item_like' menu_item_variant.id %}"
+           class="btn like {% if is_dislike %} disabled {% endif %}"><i class="fa  fa-thumbs-up"
+                                                                        style="color: green;font-size: 30px">&nbsp;
+            &nbsp;{{ menu_item_variant.total_likes }}</i></a>
+    {% else %}
+{#                <a href="{% url 'menu_item_like' menu_item_variant.id %}"#}
+{#                   class="btn btn-info {% if is_dislike %} disabled {% endif %}">Like</a>#}
+        <a href="{% url 'menu_item_like' menu_item_variant.id %}"
+           class="btn like {% if is_dislike %} disabled {% endif %}"><i class="fa  fa-thumbs-o-up"
+                                                                        style="color: black;font-size: 24px">&nbsp;
+            &nbsp;{{ menu_item_variant.total_likes }}</i></a>
+    {% endif %}
+{% endif %}

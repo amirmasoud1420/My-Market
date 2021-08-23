@@ -6,8 +6,7 @@
         border: solid 0.5px gray;
         text-align: center;
         width: 250px;
-        height: 358px;
-    {#border-radius: 10px;#}
+        height: 440px;
         box-shadow: 1px 0.5px 7px 2px #858585;
         background-color: white;
 
@@ -17,15 +16,31 @@
         width: 99%;
         height: 40px;
         font-size: 1rem;
-    {#margin-bottom: 0.5rem;#}{#border-radius: 0;#}
+
     }
 </style>
 <div class="menu_item_card">
-    <img style="width: auto;height:50%;margin-bottom: 1rem" src="{% static menu_item.menu_item.image_set.last.image %}">
+
+    <img style="width: auto;height:50%;margin-bottom: 1rem;text-align: center;max-width: 100%"
+         src="{% static menu_item.menu_item.image_set.last.image %}">
+
     <p>{% trans 'Name : ' %}{{ menu_item.menu_item.name }}</p>
     <p>{% trans 'Brand : ' %}{{ menu_item.menu_item.brand.name }}</p>
-    <p>{% trans 'Price : ' %}{{ menu_item.price }}{% trans ' Toman' %}</p>
-    <a href="#">
+    {% if menu_item.discount %}
+        {% if not menu_item.discount.is_expired %}
+            <p style="text-decoration: line-through;color: red">
+                {% trans 'Price : ' %}{{ menu_item.price }}{% trans ' Toman' %}</p>
+            <p>{% trans 'Price : ' %}{{ menu_item.final_price }}{% trans ' Toman' %}</p>
+        {% else %}
+            <p>{% trans 'Price : ' %}{{ menu_item.price }}{% trans ' Toman' %}</p>
+            <p><br></p>
+        {% endif %}
+
+    {% else %}
+        <p>{% trans 'Price : ' %}{{ menu_item.price }}{% trans ' Toman' %}</p>
+        <p><br></p>
+    {% endif %}
+    <a href="{% url 'menu_item_detail' menu_item.id %}">
         <button class="btn btn-primary my-btn">{% trans 'Show Detail' %}</button>
     </a>
 

@@ -38,6 +38,10 @@ INSTALLED_APPS = [
 
     'rest_framework',
 
+    'ckeditor',
+    'ckeditor_uploader',
+    'taggit',
+
     'core',
     'product',
     'customer',
@@ -101,15 +105,15 @@ DATABASES = {
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
@@ -143,7 +147,7 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR / 'media/'
 
 AUTH_USER_MODEL = 'core.User'
 
@@ -196,9 +200,21 @@ LOGGING = {
             'propagate': True,
         },
         'project.developers': {
-            'handlers': ['my-file'],
+            'handlers': ['my-console'],
             'level': 'DEBUG',
             'propagate': False,
         },
     },
 }
+
+LOGIN_URL = '/customer/login/'
+# LOGIN_REDIRECT_URL = '/customer/profile/'
+LOGIN_REDIRECT_URL = '/'
+
+CKEDITOR_UPLOAD_PATH = 'ck/'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+    },
+}
+TAGGIT_CASE_INSENSITIVE = True

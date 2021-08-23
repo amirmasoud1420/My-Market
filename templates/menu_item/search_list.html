@@ -1,0 +1,15 @@
+{% extends 'menu_item/menu_item_list_base.html' %}
+{% load i18n %}
+{% load product_extras %}
+{% block Title %}{% trans 'Produt List' %}{% endblock %}
+
+{% block Products %}
+    {% if menu_items %}
+        {% for i in menu_items %}
+            <div style="margin-top: 1rem;margin-bottom: 1rem" class="col-12 col-md-6  col-lg-4 col-xl-3">
+                {% include 'menu_item/menu_item_card.html' with menu_item=i.menuitemvariant_set.last %}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

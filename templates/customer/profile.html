@@ -1,0 +1,155 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block Title %}{% trans 'Profile' %}{% endblock %}
+{% block ExtraStyle %}
+    <style>
+
+
+        .profile {
+            margin: 20px 0;
+        }
+
+
+        .profile-sidebar {
+            padding: 20px 0 10px 0;
+            background: #fff;
+        }
+
+        .profile-userpic img {
+            text-align: center;
+            float: none;
+            margin: auto;
+            width: 78%;
+            height: 78%;
+            -webkit-border-radius: 50% !important;
+            -moz-border-radius: 50% !important;
+            border-radius: 50% !important;
+        }
+
+        .profile-usertitle {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .profile-usertitle-name {
+            color: #5a7391;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+
+        /* Profile Content */
+        .profile-content {
+            padding: 20px;
+            background: #fff;
+            min-height: 460px;
+        }
+
+
+        a, button, code, div, img, input, label, li, p, pre, select, span, svg, table, td, textarea, th, ul {
+            -webkit-border-radius: 0 !important;
+            -moz-border-radius: 0 !important;
+            border-radius: 0 !important;
+        }
+
+
+        .portlet {
+            margin-top: 0;
+            margin-bottom: 25px;
+            padding: 0;
+            border-radius: 4px;
+        }
+
+        .portlet.bordered {
+            border-left: 2px solid #e6e9ec !important;
+        }
+
+        .portlet.light {
+            padding: 12px 20px 15px;
+            background-color: #fff;
+        }
+
+        .portlet.light.bordered {
+            border: 1px solid #e7ecf1 !important;
+        }
+
+
+        .profile-desc-title {
+            color: #7f90a4;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .profile-desc-text {
+            color: #7e8c9e;
+            font-size: 14px;
+        }
+
+        .margin-top-20 {
+            margin-top: 20px !important;
+        }
+
+
+    </style>
+{% endblock %}
+{% block Body %}
+    <div class="container">
+        <div class="row profile">
+            <div class="col-md-3">
+                <div class="profile-sidebar">
+                    <!-- SIDEBAR USERPIC -->
+                    <div style="margin: auto;text-align: center" class="profile-userpic">
+                        <img style="margin: auto" src={% static customer.image %}
+                                class="img-responsive" alt="">
+                    </div>
+                    <!-- END SIDEBAR USERPIC -->
+                    <!-- SIDEBAR USER TITLE -->
+                    <div class="profile-usertitle">
+                        <div class="profile-usertitle-name">
+                            {{ customer.user.first_name }}{% trans ' ' %}{% trans ' ' %}{{ customer.user.last_name }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="portlet light bordered">
+
+                        <div>
+                            <h4 class="profile-desc-title">{% trans 'Phone Number' %}</h4>
+                            <p class="profile-desc-text">{{ customer.user.phone }}</p>
+                            <h4 class="profile-desc-title">{% trans 'Email' %}</h4>
+                            <p class="profile-desc-text">{{ customer.user.email }}</p>
+                            <a class="btn btn-primary" style="margin: auto"
+                               href={% url 'customer:customer_profile_update' %}>{% trans 'Update' %}</a>
+                            <p></p>
+                            <a class="btn btn-primary" style="margin: auto"
+                               href={% url 'customer:add_address' %}>{% trans 'Add Address' %}</a>
+                            <p></p>
+                            <a class="btn btn-primary" style="margin: auto;text-align: center"
+                               href={% url 'customer:change_password' %}>{% trans 'Change Password' %}</a>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="profile-content">
+                    <div class="row">
+                        <div class="col-12 col-lg-6" style="text-align: center;">
+                            {% for add in customer.address_set.all %}
+                                {% include 'customer/address.html' with address=add %}
+                            {% endfor %}
+                        </div>
+                        <div class="col-12 col-lg-6">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
