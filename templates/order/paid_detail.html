@@ -1,0 +1,78 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+{% load static %}
+{% block Title %}{% trans 'Cart' %}{% endblock %}
+{% block ExtraStyle %}
+    <style>
+        .but-cart {
+
+            width: 150px;
+
+
+        }
+
+        .div-cart {
+            margin: auto;
+            text-align: center;
+            margin-top: 10rem;
+        }
+
+        .c-order-box {
+            color: white;
+            background-color: darkslateblue;
+            margin: auto;
+            width: 90%;
+            border-radius: 2rem;
+            text-align: center;
+            height: auto;
+            margin-bottom: 2rem;
+        }
+
+        .c-order-box img {
+            height: 100px;
+            width: auto;
+            max-width: 100px;
+            max-height: 100px;
+            margin-bottom: 1rem;
+        }
+
+        .c-order-box-in {
+            margin: 2rem;
+            text-align: center;
+        }
+
+    </style>
+{% endblock %}
+{% block Body %}
+
+    {% if empty %}
+        <div style="margin:auto;text-align: center">
+            <h1 style="margin:auto;text-align: center;font-family: Andalus;color: #052953">{% trans 'You dont have any paid orders' %}</h1>
+        </div>
+
+    {% else %}
+
+
+        {% for j in order_paid %}
+            <div class="c-order-box row">
+
+                {% for i in j.ordermenuitem_set.all %}
+                    <div class="c-order-box-in col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                        <img src="{% static i.menu_item_variant.menu_item.image_set.last.image %}">
+                        <p>{{ i.menu_item_variant.menu_item.name }}</p>
+                        <p>{% trans 'quantity :' %}&nbsp;{{ i.quantity }}</p>
+                        <p>{% trans 'final price : ' %}&nbsp;{{ i.final_price }}</p>
+                    </div>
+                {% endfor %}
+
+
+                <p class="order-price">{% trans 'Final Price :' %}&nbsp;{{ j.paid_price }}&nbsp;{% trans 'Toman' %}</p>
+            </div>
+        {% endfor %}
+
+    {% endif %}
+    <div class="div-cart">
+        <a class="btn btn-primary but-cart" href="{% url 'order:canceled_order_detail' %}">canceled</a>
+        <a class="btn btn-primary but-cart" href="{% url 'order:order_detail' %}">cart</a>
+    </div>
+{% endblock %}

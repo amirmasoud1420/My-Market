@@ -4,13 +4,19 @@ from django.utils.translation import gettext_lazy as _
 from .models import *
 from django.contrib import messages
 from .forms import *
+from django.db.models import Q
 
 
 # Create your views here.
 
 
-def test(request):
-    return render(request, 'base/base.html')
+class HomeView(View):
+    def get(self, request, *args, **kwargs):
+        search_form = SearchForm()
+        context = {
+            'search_form': search_form,
+        }
+        return render(request, 'home/home.html', context)
 
 
 class MenuItemCardView(generic.DetailView):
@@ -182,3 +188,30 @@ class CommentUnLikeView(View):
             is_dislike = True
             messages.success(self.request, _('you disliked this comment'), 'danger')
         return redirect(url)
+
+
+class ProductSearchView(View):
+    def get(self, request, *args, **kwargs):
+
+        return redirect('home')
+
+    def post(self, request, *args, **kwargs):
+        url = request.META.get('HTTP_REFERER')
+        menu_items = MenuItem.objects.all()
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            if data is not None:
+                if (data['key']).isdigit():
+
+                    menu_items = menu_items.filter(
+                        Q(menuitemvariant__discount__price__exact=int(data['key'])) |
+                        Q(menuitemvariant__discount__percent__exact=int(data['key'])) |
+                        Q(menuitemvariant__price__exact=int(data['key']))
+                    )
+                else:
+                    menu_items = menu_items.filter(name__icontains=data['key'])
+            return render(request, 'menu_item/search_list.html', {'menu_items': menu_items})
+        else:
+            messages.error(self.request, _('Search Failed!'), 'danger')
+            return redirect(url)

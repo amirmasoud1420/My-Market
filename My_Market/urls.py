@@ -20,10 +20,11 @@ import My_Market.settings as settings
 from product.views import *
 
 urlpatterns = [
-                  path('', test, name='home'),
+                  path('', HomeView.as_view(), name='home'),
                   path('admin/', admin.site.urls),
                   path('product/', include('product.urls')),
                   path('customer/', include('customer.urls')),
+                  path('order/', include('order.urls')),
                   path('product-api/', include('product.api_urls')),
                   path('customer-api/', include('customer.api_urls')),
                   path('order-api/', include('order.api_urls')),

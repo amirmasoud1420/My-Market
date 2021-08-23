@@ -26,7 +26,32 @@
         background-color: var(--asli);
     }
 
+    #middle-search input {
+        border-radius: 5px;
+        border: 8px solid transparent;
+        background-color: #cfcfcf;
+        text-align: center;
+    }
+    #middle-search input:focus{
+        background-color: white;
+    }
 
+    #middle-search button {
+        border-radius: 5px;
+        border: 8px solid transparent;
+        background-color:green;
+        color: white;
+        text-align: center;
+        width: 100px;
+        height: auto;
+    }
+
+    @media screen and (max-width: 780px) {
+        #middle-search {
+            display: none;
+
+        }
+    }
 </style>
 {% block ExtraStyle %}{% endblock %}
 <body>
@@ -38,11 +63,11 @@
     <div class="row" style="height: 80px;background-color: var(--header);padding-right: 0;padding-left: 2.5rem">
 
         <div class="col-2 col-md-1 col-lg-1" style="text-align: center">
-            <a href="#">
+            <a href="{% url 'order:order_detail' %}">
                 <img style="margin-top: 0.5rem;margin-bottom: 0.3rem;width: 45%;height: auto"
                      src="{% static 'base/img/card.png' %}"/>
             </a>
-            <p>{% trans "Card" %}</p>
+            <p>{% trans "Cart" %}</p>
 
         </div>
         <div class="col-2 col-md-1 col-lg-1" style="text-align: center">
@@ -55,7 +80,13 @@
             {% endblock %}
         </div>
         <div class="col-1 col-md-5 col-lg-7" style="text-align: center;padding-top: 1.5rem">
+            <form id="middle-search" method="post" action="{% url 'product_search' %}">
+                {% csrf_token %}
 
+                <input type="text" name="key" maxlength="30" required="" id="id_key"
+                       placeholder="{% trans 'search...' %}">
+                <button type="submit">{% trans 'Search' %}</button>
+            </form>
         </div>
         <div class="col-7 col-md-5 col-lg-3" style="padding-right: 0;padding-left: 5rem">
 

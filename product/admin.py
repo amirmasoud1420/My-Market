@@ -2,6 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from .models import *
+import admin_thumbnails
 
 
 class BaseAdmin(admin.ModelAdmin):
@@ -17,9 +18,15 @@ class CategoryAdmin(BaseAdmin):
     list_display = ('name', 'create_time_stamp', 'modify_time_stamp')
 
 
+@admin_thumbnails.thumbnail('image')
+class ImagesInlines(admin.TabularInline):
+    model = Image
+    extra = 4
+
+
 class MenuItemAdmin(BaseAdmin):
     list_display = ('name', 'create_time_stamp', 'modify_time_stamp')
-    inlines = [MenuItemVariantInlines]
+    inlines = [MenuItemVariantInlines, ImagesInlines]
 
 
 class MenuItemVariantAdmin(BaseAdmin):

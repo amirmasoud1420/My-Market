@@ -1,0 +1,222 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+{% load static %}
+{% block Title %}{% trans 'Cart' %}{% endblock %}
+{% block ExtraHead %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+{% endblock %}
+{% block ExtraStyle %}
+    <style>
+        .but-cart {
+
+            width: 150px;
+
+
+        }
+
+        .div-cart {
+            margin: auto;
+            text-align: center;
+            margin-top: 10rem;
+        }
+
+        .order-box {
+            {#color: white;#}
+            color: black;
+        {#background-color: darkslateblue;#}
+            background-color: #c2d605;
+            height: 200px;
+            text-align: center;
+            margin: auto;
+            margin-bottom: 3rem;
+            width: 90%;
+            border-radius: 15px 0 15px 0;
+        }
+
+        .order-img {
+            height: 90%;
+            width: auto;
+            max-width: 150px;
+            margin: 1rem;
+            max-height: 180px;
+        }
+
+        .menu-item-name {
+            font-size: 1rem;
+            margin-top: 4rem;
+        }
+
+        .zarb {
+            border-radius: 100%;
+            background-color: red;
+            color: white;
+            margin-top: 3.8rem;
+        }
+
+        .zarb:hover {
+            background-color: white;
+            color: red;
+        }
+
+        .zarb:active {
+            background-color: brown;
+            color: white;
+        }
+
+        .order-icon {
+            margin-top: 1.5rem;
+            font-size: 1.5rem;
+
+        }
+
+        .order-icon.order-plus {
+            color: #01a401;
+        }
+
+        .order-icon.order-min {
+            color: #ff1313;
+        }
+
+        span.order-icon {
+            margin-top: 6rem;
+
+        }
+
+        @media screen and (max-width: 1200px) {
+            #order-item-name {
+                display: none;
+
+            }
+        }
+
+        .c-order-btn {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+
+        .c-order-btn a {
+            width: 20%;
+            margin: auto;
+            font-size: 2rem;
+            font-family: Andalus;
+        }
+
+        @media screen and (max-width: 620px) {
+            #order-item-name {
+                display: block;
+
+            }
+
+            #order-item-img {
+                display: none;
+            }
+
+            .order-icon {
+                margin-top: 1.5rem;
+                font-size: 1rem;
+
+            }
+        }
+    </style>
+{% endblock %}
+{% block Body %}
+
+    {% if empty %}
+        <div style="margin:auto;text-align: center">
+            <h1 style="margin:auto;text-align: center;font-family: Andalus;color: #052953">{% trans 'Your Cart Is Empty' %}</h1>
+        </div>
+    {% else %}
+
+        {% for j in order_during %}
+            <div class="row">
+                <div class="order-box">
+                    <div class="row">
+                        <div class="col-2">
+                            <form method="post" action="{% url 'order:remove_order_item' j.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn zarb">X</button>
+                            </form>
+                        </div>
+                        <div class="col-2">
+                            <p class="menu-item-name">{% trans 'Price :' %}&nbsp;&nbsp;{{ j.final_price }}</p>
+                        </div>
+                        <div class="col-5 col-sm-4">
+                            <div class="order-icon order-min btn">
+                                <form method="post" action="{% url 'order:remove_quantity' j.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="order-icon order-min btn"><i
+                                            class="fa fa-minus  "></i></button>
+                                </form>
+                            </div>
+                            <small id="quantity-small" class="order-icon">{{ j.quantity }}</small>
+                            <div class="order-icon order-plus btn">
+
+
+                                <form method="post" action="{% url 'order:add_quantity' j.id %}">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit"
+                                            class="order-icon order-plus btn {% if j.menu_item_variant.count < 1 %}disabled{% endif %}">
+                                        <i
+                                                class="fa fa-plus  "></i></button>
+
+                                </form>
+
+
+                            </div>
+
+                        </div>
+                        <div class="col-1 col-sm-2" id="order-item-name">
+                            <p class="menu-item-name">{{ j.menu_item_variant.menu_item.name }}</p>
+                        </div>
+                        <div class="col-1 col-sm-2" id="order-item-img">
+                            <img class="order-img"
+                                 src="{% static j.menu_item_variant.menu_item.image_set.last.image %}">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        {% endfor %}
+        <div class="c-order-btn">
+
+            <a href="{% url 'order:create_order' order_during.last.order.id %}" class="btn btn-success ">
+                {% trans 'create order' %}
+            </a>
+        </div>
+
+
+    {% endif %}
+    <div class="div-cart">
+        <a class="btn btn-primary but-cart" href="{% url 'order:canceled_order_detail' %}">canceled</a>
+        <a class="btn btn-primary but-cart" href="{% url 'order:paid_order_detail' %}">paid</a>
+    </div>
+
+    {#    <script>#}
+    {#        function add_quantity(id) {#}
+    {##}
+    {#            $.ajax(#}
+    {#                {#}
+    {##}
+    {#                    'url': 'http://127.0.0.1:8000/order-api/order-menu-item-detail/' + id,#}
+    {#                    'type': 'patch',#}
+    {#'data': $('#add_quantity').serialize(),#}
+    {#                    'data': {'quantity': (Number($('#quantity-input').val()) + 1)},#}
+    {#                    'headers': {#}
+    {#                        'X-CSRFToken': '{{ csrf_token }}',#}
+    {#                    },#}
+    {#                    success: function (resp, status) {#}
+    {#                        $('#quantity-small').innerText = '';#}
+    {#                        $('#quantity-small').innerText = resp['quantity'];#}
+    {#                        console.log(resp)#}
+    {#                        alert((resp['quantity']))#}
+    {##}
+    {#                    }#}
+    {#                }#}
+    {#            )#}
+    {#        }#}
+    {#    </script>#}
+{% endblock %}

@@ -7,6 +7,7 @@ from core.models import *
 from .validators import *
 from ckeditor_uploader.fields import RichTextUploadingField
 from taggit.managers import TaggableManager
+from django.db.models import Avg, Min, Max
 
 
 class Category(BaseModel, TimestampMixin):
@@ -235,6 +236,13 @@ class MenuItem(BaseModel, TimestampMixin):
             i.delete_time_stamp = timezone.now()
             i.is_deleted = True
             i.save()
+
+    def average_rate(self):
+        data = Comment.objects.filter(is_reply=False, menu_item=self).aggregate(avg=Avg('rate'))
+        rate = 0
+        if data['avg']:
+            rate = round(data['avg'], 1)
+        return rate
 
     def __str__(self):
         return f"{self.id}#   {self.name} "

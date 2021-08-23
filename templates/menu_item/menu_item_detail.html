@@ -28,14 +28,12 @@
         <div class="col-12 col-lg-8">
             <div style="margin-top: 1rem">
                 <h3>{{ menu_item_variant.menu_item.name }}</h3>
-
+                <h4>{% trans 'rate average :' %}&nbsp;&nbsp;{{ menu_item_variant.menu_item.average_rate }}&nbsp;(5)</h4>
                 {% include 'menu_item/like.html' with menu_item_variant=menu_item_variant  is_like=is_like is_dislike=is_dislike %}
                 {% include 'menu_item/dislike.html' with menu_item_variant=menu_item_variant  is_like=is_like is_dislike=is_dislike %}
 
-                <p>Likes:<small>{{ menu_item_variant.total_likes }}</small></p>
-                <p>Dislikes:<small>{{ menu_item_variant.total_un_likes }}</small></p>
-                <p>{{ menu_item_variant.menu_item.description|safe }} </p>
-                {% include 'menu_item/price.html' with menu_item=menu_item_variant %}
+                {#                <p>Likes:<small>{{ menu_item_variant.total_likes }}</small></p>#}
+                {#                <p>Dislikes:<small>{{ menu_item_variant.total_un_likes }}</small></p>#}
                 {% if menu_item_variant.menu_item.status %}
                     <form method="post">
                         {% csrf_token %}
@@ -49,6 +47,11 @@
                             {% endfor %}</p>
                     </form>
                 {% endif %}
+                {% include 'menu_item/price.html' with menu_item=menu_item_variant %}
+                {% include 'order/add_to_cart.html' with menu_item_variant=menu_item_variant %}
+                <p>{{ menu_item_variant.menu_item.description|safe }} </p>
+
+
             </div>
         </div>
 

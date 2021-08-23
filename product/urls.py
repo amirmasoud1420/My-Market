@@ -2,7 +2,7 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path('', test, name='test'),
+    path('', HomeView.as_view(), name='product_home'),
     path('menu-item-card/<int:pk>/', MenuItemCardView.as_view(), name='menu_item_card'),
     path('category/<int:pk>/', MenuItemCategoryView.as_view(), name='menu_item_category'),
     path('detail/<int:pk>/', MenuItemVariantDetailView.as_view(), name='menu_item_detail'),
@@ -13,4 +13,5 @@ urlpatterns = [
          name='menu_item_comment_reply'),
     path('comment-like/<int:pk>/', CommentLikeView.as_view(), name='comment_like'),
     path('comment-unlike/<int:pk>/', CommentUnLikeView.as_view(), name='comment_unlike'),
+    path('product-serach/', ProductSearchView.as_view(), name='product_search'),
 ]

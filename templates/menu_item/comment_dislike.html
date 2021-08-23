@@ -1,24 +1,23 @@
 <style>
     .dislike {
         width: auto;
-    }
-
-    a {
         margin-left: 2rem;
     }
+
+
 </style>
 {% if user.is_authenticated %}
     {% if user  in comment.un_likes.all %}
-        {#        <a href="{% url 'comment_unlike' comment.id %}"#}
-        {#           class="btn btn-danger {% if user in comment.likes.all %} disabled {% endif %}">disLike</a>#}
+
         <a href="{% url 'comment_unlike' comment.id %}"
-           class="btn dislike {% if user in comment.likes.all %} disabled {% endif %}"><i class="fa  fa-thumbs-o-down"
-                                                                                          style="color: red;font-size: 24px"></i></a>
+           class="btn dislike {% if user in comment.likes.all %} disabled {% endif %}"><i class="fa  fa-thumbs-down"
+                                                                                          style="color: red;font-size: 24px">&nbsp;
+            &nbsp;{{ comment.total_un_likes }}</i></a>
     {% else %}
         <a href="{% url 'comment_unlike' comment.id %}"
            class="btn dislike {% if user in comment.likes.all %} disabled {% endif %}"><i class="fa  fa-thumbs-o-down"
-                                                                                          style="color: black;font-size: 20px"></i></a>
+                                                                                          style="color: black;font-size: 20px">&nbsp;
+            &nbsp;{{ comment.total_un_likes }}</i></a>
     {% endif %}
 
 {% endif %}
-<span>likes &nbsp; &nbsp; {{ comment.total_un_likes }}</span>

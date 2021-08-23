@@ -1,0 +1,132 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+{% load static %}
+{% block Title %}{% trans 'Create Order' %}{% endblock %}
+{% block ExtraStyle %}
+    <style>
+        .c-order-box {
+            color: white;
+            background-color: darkslateblue;
+            margin: auto;
+            width: 90%;
+            border-radius: 2rem;
+            text-align: center;
+            height: auto;
+        }
+
+        .c-order-box img {
+            height: 100px;
+            width: auto;
+            max-width: 100px;
+            max-height: 100px;
+            margin-bottom: 1rem;
+        }
+
+        .c-order-box-in {
+            margin: 2rem;
+            text-align: center;
+        }
+
+        .off-code {
+            margin: auto;
+            text-align: center;
+        }
+
+        .off-code form {
+            margin-top: 3rem;
+        }
+
+        .off-code form input {
+            border-radius: 5px;
+            border: 8px solid transparent;
+            background-color: #fff22b;
+            text-align: center;
+
+        }
+
+        .off-code form input:focus {
+            background-color: white;
+
+        }
+
+        .order-price {
+            font-size: 1.5rem;
+            color: greenyellow;
+        }
+
+        .off-code-del {
+            margin: auto;
+            text-align: center;
+        }
+
+        .off-code-del small {
+            font-size: 1rem;
+
+        }
+
+        .off-code-del a {
+            font-size: 1rem;
+            background-color: transparent;
+            color: red;
+            border: 0;
+        }
+
+        .next-form {
+            margin: auto;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+    </style>
+{% endblock %}
+{% block Body %}
+    <div class="c-order-box row">
+        {% for i in order.ordermenuitem_set.all %}
+            <div class="c-order-box-in col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <img src="{% static i.menu_item_variant.menu_item.image_set.last.image %}">
+                <p>{{ i.menu_item_variant.menu_item.name }}</p>
+                <p>{% trans 'quantity :' %}&nbsp;{{ i.quantity }}</p>
+                <p>{% trans 'final price : ' %}&nbsp;{{ i.final_price }}</p>
+            </div>
+        {% endfor %}
+        {% if order.off_code %}
+            {% if not order.off_code.is_expired %}
+                <p class="order-price" style="text-decoration: line-through;color: red">
+                    {% trans 'Pure Price : ' %}&nbsp;{{ order.pure_price }}&nbsp;{% trans ' Toman' %}</p>
+                <p class="order-price">{% trans 'Final Price :' %}&nbsp;{{ order.final_price }}&nbsp;{% trans 'Toman' %}</p>
+            {% else %}
+                <p class="order-price">{% trans 'Final Price :' %}&nbsp;{{ order.final_price }}&nbsp;{% trans 'Toman' %}</p>
+            {% endif %}
+        {% else %}
+            <p class="order-price">{% trans 'Final Price :' %}&nbsp;{{ order.final_price }}&nbsp;{% trans 'Toman' %}</p>
+        {% endif %}
+    </div>
+    <div class="off-code">
+        <form method="post" action="{% url 'order:off_code_add' %}">
+            {% csrf_token %}
+            <input type="text" name="off_code" placeholder="{% trans 'Off Code' %}" required>
+            <input type="hidden" name="order_id" value={{ order.id }}>
+            <button type="submit" class="btn btn-dark">{% trans 'Submit' %}</button>
+        </form>
+        {% if order.off_code %}
+            {% if not order.off_code.is_expired %}
+                <div class="off-code-del">
+                    <small>{{ order.off_code.code }}&nbsp;&nbsp;</small>
+                    <a href="{% url 'order:remove_off_code' order.id %}" class="btn">{% trans 'delete' %}</a>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="next-form">
+        <form method="post" action="{% url 'order:cancel_order' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">{% trans 'Cancel' %}</button>
+        </form>
+    </div>
+    <div class="next-form">
+        <form method="post" action="{% url 'order:select_address' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">{% trans 'next level' %}&nbsp;&nbsp;--></button>
+        </form>
+    </div>
+{% endblock %}

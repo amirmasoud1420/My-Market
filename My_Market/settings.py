@@ -200,7 +200,7 @@ LOGGING = {
             'propagate': True,
         },
         'project.developers': {
-            'handlers': ['my-file'],
+            'handlers': ['my-console'],
             'level': 'DEBUG',
             'propagate': False,
         },

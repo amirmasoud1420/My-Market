@@ -1,11 +1,18 @@
-:root{
-    --header : #f7fdc8;
-    --asli : #f7f3ed;
-    --footer : white;
+:root {
+    --header: #f7fdc8;
+    --asli: #f7f3ed;
+    --footer: white;
 }
 
-.search_header{
+.search_header {
     width: 80%;
     border-radius: 10rem;
     margin: auto;
+}
+
+@media screen and (max-width: 480px) {
+    #middle-search {
+        display: none;
+        background-color: red;
+    }
 }

@@ -1,0 +1,62 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+{% load static %}
+{% block Title %}{% trans 'Select Address' %}{% endblock %}
+{% block ExtraStyle %}
+    <style>
+        #h1-is-empty {
+            font-family: Andalus;
+            color: #052953;
+            margin: auto;
+            text-align: center;
+        }
+
+        .next-form {
+            margin: auto;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .select-address {
+            margin: auto;
+            text-align: center;
+        }
+
+        .select-address form input {
+            margin-bottom: 3rem;
+        }
+
+        .select-address form small {
+            font-size: 1.5rem;
+        }
+
+    </style>
+{% endblock %}
+{% block Body %}
+    {% if is_empty %}
+        <h1 id="h1-is-empty">{% trans "You don't have any addresse! Please add an address first." %}</h1>
+
+    {% else %}
+        <div class="select-address">
+            <form method="post" action="{% url 'order:payment' %}">
+                {% csrf_token %}
+                {% for i in user.customer.address_set.all %}
+                    <small>&nbsp;{{ i.state }}&nbsp; - &nbsp;{{ i.city }} &nbsp;</small>
+                    <input type="radio" name="select" required><br>
+                {% endfor %}
+                <br>
+                <button type="submit" class="btn btn-danger">{% trans 'Payment' %}</button>
+            </form>
+        </div>
+    {% endif %}
+    <div class="next-form">
+
+        <a class="btn btn-danger" href="{% url 'order:add_address' %}">{% trans 'Add Address' %}</a>
+    </div>
+    <div class="next-form">
+        <form method="post" action="{% url 'order:cancel_order' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">{% trans 'Cancel' %}</button>
+        </form>
+    </div>
+{% endblock %}

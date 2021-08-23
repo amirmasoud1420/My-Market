@@ -17,3 +17,9 @@ class ReplyForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['comment']
+
+
+class SearchForm(forms.Form):
+    key = forms.CharField(
+        max_length=30,
+    )
