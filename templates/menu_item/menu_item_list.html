@@ -5,7 +5,7 @@
 {% block Products %}
     {% for i in menu_items %}
         <div style="margin-top: 1rem;margin-bottom: 1rem" class="col-12 col-md-6  col-lg-4 col-xl-3">
-            {% include 'menu_item/menu_item_card.html' with menu_item=i.menuitemvariant_set.last %}
+            {% include 'menu_item/menu_item_card.html' with menu_item=i %}
         </div>
     {% endfor %}
 {% endblock %}

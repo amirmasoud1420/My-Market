@@ -7,6 +7,8 @@ from django.contrib import messages
 from .forms import *
 from django.db.models import Q
 from django.core.paginator import Paginator
+from .filters import *
+from django.db.models import Avg, Min, Max
 
 
 # Create your views here.
@@ -15,7 +17,13 @@ from django.core.paginator import Paginator
 class HomeView(View):
     def get(self, request, *args, **kwargs):
         search_form = SearchForm()
+        category = Category.objects.filter(is_sub_category=False)
+        gallery = Gallery.objects.all()
+        create = MenuItem.objects.all().order_by('-create_time_stamp')[:6]
         context = {
+            'create': create,
+            'gallery': gallery,
+            'category': category,
             'search_form': search_form,
         }
         return render(request, 'home/home.html', context)
@@ -31,10 +39,45 @@ class MenuItemCategoryView(generic.DetailView):
     def get(self, request, *args, **kwargs):
         category = get_object_or_404(Category, id=kwargs['pk'])
         menu_items = category.menuitem_set.all()
+
+        menu_item_filter = MenuItemFilter(request.GET, queryset=menu_items)
+        menu_items = menu_item_filter.qs
+
+        menu_item_variants = []
+        for i in menu_items:
+            data = i.menuitemvariant_set.all().aggregate(price=Min('price'))
+            if data['price']:
+                menu_item_variants.append(i.menuitemvariant_set.filter(price=int(data['price'])).last())
+
+        id_list = []
+        for i in menu_item_variants:
+            id_list.append(i.id)
+        menu_item_variants_q = MenuItemVariant.objects.filter(id__in=id_list)
+        min_price = 0
+        min = menu_item_variants_q.all().aggregate(price=Min('price'))
+        if min['price']:
+            min_price = int(min['price'])
+        max_price = 1000000
+        max = menu_item_variants_q.all().aggregate(price=Max('price'))
+        if max['price']:
+            max_price = int(max['price'])
+
+        menu_item_variant_filter = MenuItemVariantFilter(request.GET, queryset=menu_item_variants_q)
+        menu_items = menu_item_variant_filter.qs
+
         paginator = Paginator(menu_items, 12)
         page_num = request.GET.get('page')
         page_obj = paginator.get_page(page_num)
-        return render(request, 'menu_item/menu_item_list.html', {'menu_items': page_obj})
+        category = Category.objects.filter(is_sub_category=False)
+        context = {
+            'category': category,
+            'menu_items': page_obj,
+            'filter': menu_item_variant_filter,
+            'menu_item_filter': menu_item_filter,
+            'min_price': min_price,
+            'max_price': max_price,
+        }
+        return render(request, 'menu_item/menu_item_list.html', context)
 
 
 # class MenuItemCategoryView(generic.DetailView):
@@ -75,7 +118,9 @@ class MenuItemVariantDetailView(View):
         comments = Comment.objects.filter(menu_item=menu_item_variant.menu_item, is_reply=False)
         reply_from = ReplyForm()
 
+        category = Category.objects.filter(is_sub_category=False)
         context = {
+            'category': category,
             'menu_item_variant': menu_item_variant,
             'variants': variants,
             'similar_product': similar_product,

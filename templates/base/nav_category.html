@@ -1,0 +1,8 @@
+<ul>
+    {% for i in category %}
+        <li><a href="{% url 'menu_item_category' i.id %}">{{ i.name }}</a>
+            {% include 'base/nav_category.html' with category=i.category_set.all %}
+        </li>
+
+    {% endfor %}
+</ul>

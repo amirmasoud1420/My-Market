@@ -11,6 +11,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth import authenticate, login, logout, forms, update_session_auth_hash
 from django.contrib import messages
 from django.core.paginator import Paginator
+from product.models import *
 
 # Create your views here.
 
@@ -107,7 +108,8 @@ class CustomerProfileUpdateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         user_form = UserUpdateForm(instance=request.user)
         customer_form = CustomerUpdateForm(instance=Customer.objects.get(user=request.user))
-        context = {'user_form': user_form, 'customer_form': customer_form}
+        category = Category.objects.filter(is_sub_category=False)
+        context = {'user_form': user_form, 'customer_form': customer_form, 'category': category}
         return render(request, 'customer/update.html', context)
 
     def post(self, request, *args, **kwargs):

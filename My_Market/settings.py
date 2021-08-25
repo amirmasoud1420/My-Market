@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'taggit',
     'sorl.thumbnail',
+    'django_filters',
 
     'core',
     'product',

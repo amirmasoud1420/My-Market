@@ -122,7 +122,7 @@ class Brand(BaseModel, TimestampMixin):
     )
 
     def __str__(self):
-        return f"{self.id}# {self.name}"
+        return f"{self.name}"
 
 
 class Image(BaseModel, TimestampMixin):
@@ -225,6 +225,7 @@ class MenuItem(BaseModel, TimestampMixin):
         blank=True,
         related_name='favorites',
     )
+    sell = models.IntegerField(default=0, verbose_name=_('sell count'))
 
     def my_delete(self):
         super().my_delete()
@@ -291,6 +292,9 @@ class MenuItemVariant(BaseModel, TimestampMixin):
         verbose_name=_('Un Likes'),
         related_name='menu_item_variants_un_likes',
     )
+
+    def brand(self):
+        return self.menu_item.brand
 
     def total_likes(self):
         return self.likes.count()
@@ -361,3 +365,24 @@ class Comment(BaseModel, TimestampMixin):
 
     def __str__(self):
         return f"{self.id}# {self.user.phone} : {self.menu_item.name}"
+
+
+class Gallery(models.Model):
+    name = models.CharField(
+        verbose_name=_('image name'),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    description = models.CharField(
+        verbose_name=_('description'),
+        max_length=300,
+        blank=True,
+        null=True,
+    )
+    image = models.FileField(
+        verbose_name=_('image'),
+        upload_to='gallery/',
+        blank=True,
+        null=True,
+    )

@@ -15,6 +15,36 @@
             margin-top: 1rem;
 
         }
+
+        .my-gal .card {
+            background-color: white;
+            padding: 14px;
+            border: 1px solid black;
+
+        }
+
+        .my-gal .demo {
+            width: 100%
+        }
+
+        .my-gal ul {
+            list-style: none outside none;
+            padding-left: 0;
+            margin-bottom: 0
+        }
+
+        .my-gal li {
+            display: block;
+            float: left;
+            margin-right: 6px;
+            cursor: pointer
+        }
+
+        .my-gal img {
+            display: block;
+            height: auto;
+            width: 100%
+        }
     </style>
 {% endblock %}
 {% block Body %}
@@ -22,74 +52,124 @@
 
 
         {#Image#}
-        <div class="col-12 col-lg-4 ">
-            <div class="img-card">
-                <img style="height: 300px;width: auto"
-                     src="{% static menu_item_variant.menu_item.image_set.last.image %}">
+        <div class="col-12 col-lg-4 my-gal">
+            <div class="card">
+                <div class="demo">
+                    <ul id="lightSlider">
+                        <li data-thumb="{{ menu_item_variant.menu_item.image_set.last.image.url }}"><img
+                                src="{{ menu_item_variant.menu_item.image_set.last.image.url }}"/>
+                        </li>
+                        {% for i in menu_item_variant.menu_item.image_set.all %}
+                            <li data-thumb="{{ i.image.url }}"><img src="{{ i.image.url }}"/>
+                            </li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {#        <div class="col-12 col-lg-4 ">#}
+        {#            <div class="img-card">#}
+        {#                <img style="height: 300px;width: auto"#}
+        {#                     src="{% static menu_item_variant.menu_item.image_set.last.image %}">#}
+        {#            </div>#}
+        {#        </div>#}
+
+
+        <div class="col-12 col-lg-8">
+            <div class="container">
+                <div class="row">
+                    <div class=" col-12 col-lg-6" style="margin-top: 1rem">
+
+                        {#Name#}
+                        <h3>{{ menu_item_variant.menu_item.name }}</h3>
+
+                        {# Rate#}
+                        <h4>{% trans 'rate average :' %}&nbsp;&nbsp;{{ menu_item_variant.menu_item.average_rate }}&nbsp;(5)</h4>
+
+
+                        {#   like and dislike#}
+                        {% include 'menu_item/like.html' with menu_item_variant=menu_item_variant  is_like=is_like is_dislike=is_dislike %}
+                        {% include 'menu_item/dislike.html' with menu_item_variant=menu_item_variant  is_like=is_like is_dislike=is_dislike %}
+
+
+                        {# variant - radio#}
+                        {% if menu_item_variant.menu_item.status %}
+                            <form method="post">
+                                {% csrf_token %}
+                                <p>{{ menu_item_variant.menu_item.variable_specification_name }}:
+                                    {% for i in variants %}
+
+                                        <small>{{ i.variable_specification_value }}</small>
+                                        <input type="radio" value="{{ i.id }}" name="select"
+                                               {% if i == menu_item_variant %}checked{% endif %}
+                                               onchange="this.form.submit();">
+
+                                    {% endfor %}</p>
+                            </form>
+                        {% endif %}
+
+
+
+
+
+
+                        {#price    #}
+                        {% include 'menu_item/price.html' with menu_item=menu_item_variant %}
+
+
+                        {#favorites#}
+                        <div style="margin-bottom: 2rem">
+                            {% if is_favorites %}
+                                <a href="{% url 'add_favorites' menu_item_variant.menu_item.id %}"><i
+                                        class="fa fa-heart"
+                                        style="color: red;font-size: 24px"></i></a>
+                            {% else %}
+                                <a href="{% url 'add_favorites' menu_item_variant.menu_item.id %}"><i
+                                        class="fa fa-heart-o"
+                                        style="color: red;font-size: 24px"></i></a>
+                            {% endif %}
+                        </div>
+
+
+                        {#cart#}
+                        {% include 'order/add_to_cart.html' with menu_item_variant=menu_item_variant %}
+
+
+                        {#description#}
+                        {#                <p>{{ menu_item_variant.menu_item.description|safe }} </p>#}
+
+
+                    </div>
+                    <div class=" col-12 col-lg-6" style="margin-top: 1rem">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+{##}
+{#                                <th scope="col">{% trans 'Name' %}</th>#}
+{#                                <th scope="col">{% trans 'Value' %}</th>#}
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for i in menu_item_variant.menu_item.specifications.all %}
+                                <tr>
+
+                                    <td><b>{{ i.name }}</b></td>
+                                    <td style="text-align: center">{{ i.value }}</td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
 
-        <div class="col-12 col-lg-8">
-            <div style="margin-top: 1rem">
-
-                {#Name#}
-                <h3>{{ menu_item_variant.menu_item.name }}</h3>
-
-                {# Rate#}
-                <h4>{% trans 'rate average :' %}&nbsp;&nbsp;{{ menu_item_variant.menu_item.average_rate }}&nbsp;(5)</h4>
-
-
-                {#   like and dislike#}
-                {% include 'menu_item/like.html' with menu_item_variant=menu_item_variant  is_like=is_like is_dislike=is_dislike %}
-                {% include 'menu_item/dislike.html' with menu_item_variant=menu_item_variant  is_like=is_like is_dislike=is_dislike %}
-
-
-                {# variant - radio#}
-                {% if menu_item_variant.menu_item.status %}
-                    <form method="post">
-                        {% csrf_token %}
-                        <p>{{ menu_item_variant.menu_item.variable_specification_name }}:
-                            {% for i in variants %}
-
-                                <small>{{ i.variable_specification_value }}</small>
-                                <input type="radio" value="{{ i.id }}" name="select"
-                                       {% if i == menu_item_variant %}checked{% endif %} onchange="this.form.submit();">
-
-                            {% endfor %}</p>
-                    </form>
-                {% endif %}
-
-
-
-
-
-
-                {#price    #}
-                {% include 'menu_item/price.html' with menu_item=menu_item_variant %}
-
-
-                {#favorites#}
-                <div style="margin-bottom: 2rem">
-                    {% if is_favorites %}
-                        <a href="{% url 'add_favorites' menu_item_variant.menu_item.id %}"><i class="fa fa-heart"
-                                                                                              style="color: red;font-size: 24px"></i></a>
-                    {% else %}
-                        <a href="{% url 'add_favorites' menu_item_variant.menu_item.id %}"><i class="fa fa-heart-o"
-                                                                                              style="color: red;font-size: 24px"></i></a>
-                    {% endif %}
-                </div>
-
-
-                {#cart#}
-                {% include 'order/add_to_cart.html' with menu_item_variant=menu_item_variant %}
-
-
-                {#description#}
-                <p>{{ menu_item_variant.menu_item.description|safe }} </p>
-
-
-            </div>
+        <div class="row" style="text-align: center;margin: auto;margin-top: 3rem">
+            <p>{{ menu_item_variant.menu_item.description|safe }} </p>
         </div>
 
 
@@ -100,7 +180,7 @@
 
 
     {#    Similar Product#}
-    <div class="row">
+    <div class="row" style="margin: auto;padding: 10px">
         {% for i in similar_product %}
             <div style="margin-top: 1rem;margin-bottom: 1rem" class="col-12 col-md-6  col-lg-4 col-xl-3">
                 {% include 'menu_item/menu_item_card.html' with menu_item=i.menuitemvariant_set.last %}
@@ -108,7 +188,6 @@
             </div>
         {% endfor %}
     </div>
-
 
 
     {#    comment#}
@@ -119,5 +198,15 @@
     </div>
 
 
-
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
+    <script src='https://sachinchoolur.github.io/lightslider/dist/js/lightslider.js'></script>
+    <script>
+        $('#lightSlider').lightSlider({
+            gallery: true,
+            item: 1,
+            loop: true,
+            slideMargin: 0,
+            thumbItem: 9
+        });
+    </script>
 {% endblock %}
