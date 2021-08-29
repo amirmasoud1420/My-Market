@@ -1,0 +1,82 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block Title %}{% trans 'profile' %}{% endblock %}
+{% block ExtraHead %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+{% endblock %}
+{% block ExtraStyle %}
+    <style>
+        .my-items {
+            background-color: yellowgreen;
+            height: 70vh;
+            border-radius: 0 15px 15px 0;
+
+
+        }
+
+        .img-box {
+            background-color: white;
+            height: 40%;
+            border-radius: 15px;
+            text-align: center;
+
+
+        }
+
+        .my-roes {
+            height: 10%;
+
+            text-align: center;
+            width: 100%;
+            border-radius: 15px;
+            padding-top: 1rem;
+            margin: auto;
+            color: white;
+
+        }
+
+        .my-roes:hover {
+            background-color: darkolivegreen;
+        }
+
+        .my-roes a {
+            color: white;
+            text-decoration-line: none;
+        }
+    </style>
+    {% block ExtraStyle1 %}{% endblock %}
+{% endblock %}
+{% block Body %}
+    <div class="row">
+        <div class="col-12 col-sm-3 col-md-2 my-items">
+            <div class=" img-box">
+                <img style="height: 80%; width: auto; max-width: 90%"
+                     src="{% static customer.image %}">
+            </div>
+            <div class="row my-roes">
+                <a href="#">{% trans 'Dashboard' %}</a>
+            </div>
+            <div class="row my-roes">
+                <a href="{% url 'customer:customer_profile_update' %}">{% trans 'Update Profile' %}</a>
+            </div>
+            <div class="row my-roes">
+                <a href="{% url 'customer:add_address' %}">{% trans 'Add Address' %}</a>
+            </div>
+            <div class="row my-roes">
+                <a href="{% url 'customer:change_password' %}">{% trans 'Change Password' %}</a>
+            </div>
+            <div class="row my-roes">
+                <a href="{% url 'customer:favorites' %}">{% trans 'Favorites' %}</a>
+            </div>
+            <div class="row my-roes">
+                <a>{% trans 'Orders' %}</a>
+            </div>
+        </div>
+
+
+        <div class="col-12 col-sm-9 col-md-10" id="content">
+            {% block Profile %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}

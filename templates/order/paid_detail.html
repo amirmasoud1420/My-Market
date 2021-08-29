@@ -40,6 +40,7 @@
             margin: 2rem;
             text-align: center;
         }
+
         .order-price {
             font-size: 1.5rem;
             color: greenyellow;
@@ -73,8 +74,11 @@
                 <p class="order-price">{% trans 'Final Price :' %}&nbsp;{{ j.paid_price }}&nbsp;{% trans 'Toman' %}</p>
             </div>
         {% endfor %}
-
+        <div class="row pag">
+            {% include 'base/pagination.html' with menu_items=order_paid %}
+        </div>
     {% endif %}
+
     <div class="div-cart">
         <a class="btn btn-primary but-cart" href="{% url 'order:canceled_order_detail' %}">canceled</a>
         <a class="btn btn-primary but-cart" href="{% url 'order:order_detail' %}">cart</a>

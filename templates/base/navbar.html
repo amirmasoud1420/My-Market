@@ -12,6 +12,7 @@
     }
 
     .my-nav ul {
+
         background-color: darkslategray;
         margin-bottom: 0;
         display: flex;
@@ -23,7 +24,7 @@
 
     }
 
-    ul li {
+    .my-nav ul li {
         text-align: center;
         display: flex;
         list-style: none;
@@ -39,13 +40,13 @@
 
     }
 
-    ul li:hover {
+    .my-nav ul li:hover {
         transition: 0s;
         z-index: 2;
 
     }
 
-    ul li.active:before {
+    .my-nav ul li.active:before {
         content: '';
         position: absolute;
         top: -20px;
@@ -56,7 +57,7 @@
 
     }
 
-    ul li.active:after {
+    .my-nav ul li.active:after {
         content: '';
         position: absolute;
         bottom: -20px;
@@ -70,19 +71,23 @@
     }
 
 
-    ul:hover {
+    .my-nav ul:hover {
         width: 100%;
     }
 
-    ul li a {
+    .my-nav ul li a {
         font-size: 1rem;
         text-decoration: none;
         color: white;
     }
 
-    ul li a:hover {
+    .my-nav ul li:hover {
+        color: yellow;
+    }
+
+    .my-nav ul li a:hover {
         text-decoration: none;
-        color: white;
+        color: yellow
     }
 
     .my-nav ul ul {

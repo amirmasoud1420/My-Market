@@ -1,7 +1,11 @@
 {% load static %}
 {% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+{% if language == 'fa' %}
+    <html lang="fa" dir="rtl">
+{% else %}
+    <html lang="en">
+{% endif %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -63,7 +67,8 @@
     {% block OffCode %}{% endblock %}
 
     {# header#}
-    <div class="row" style="height: 80px;background-color: var(--header);padding-right: 0;padding-left: 2.5rem">
+    <div class="row"
+         style="height: 80px;background-color: var(--header);padding-right: 0;padding-left: 2.5rem;direction: ltr">
 
         <div class="col-2 col-md-1 col-lg-1" style="text-align: center">
             <a href="{% url 'order:order_detail' %}">
@@ -86,7 +91,8 @@
             <form id="middle-search" method="post" action="{% url 'product_search' %}">
                 {% csrf_token %}
 
-                <input type="text" name="key" maxlength="30" required="" id="id_key"
+                <input {% if language == 'fa' %}style="direction: rtl" {% endif %}type="text" name="key" maxlength="30"
+                       required="" id="id_key"
                        placeholder="{% trans 'search...' %}">
                 <button type="submit">{% trans 'Search' %}</button>
             </form>
@@ -102,7 +108,7 @@
 
     </div>
     {% block Navbar %}
-        <div class="row" {% if not messages %}
+        <div class="row base-nav" {% if not messages %}
              style="margin-bottom: 3rem"{% endif %}>{% include 'base/navbar.html' with category=category %}</div>
     {% endblock %}
     {% block Messages %}

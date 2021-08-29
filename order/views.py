@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View, generic
@@ -23,8 +24,11 @@ class OrderDetailView(LoginRequiredMixin, View):
                 order_during = order.get(status='d')
                 order_during = order_during.ordermenuitem_set.order_by('id')
                 empty = False
+            paginator = Paginator(order_during, 4)
+            page_num = request.GET.get('page')
+            page_obj = paginator.get_page(page_num)
             context = {
-                'order_during': order_during,
+                'order_during': page_obj,
 
                 'empty': empty,
             }
@@ -48,9 +52,12 @@ class CanceledOrderDetailView(LoginRequiredMixin, View):
                 order_canceled = order.filter(status='c')
 
                 empty = False
+            paginator = Paginator(order_canceled, 4)
+            page_num = request.GET.get('page')
+            page_obj = paginator.get_page(page_num)
             context = {
 
-                'order_canceled': order_canceled,
+                'order_canceled': page_obj,
 
                 'empty': empty,
             }
@@ -75,9 +82,12 @@ class PaidOrderDetailView(LoginRequiredMixin, View):
                 order_paid = order.filter(status='p')
 
                 empty = False
+            paginator = Paginator(order_paid, 4)
+            page_num = request.GET.get('page')
+            page_obj = paginator.get_page(page_num)
             context = {
 
-                'order_paid': order_paid,
+                'order_paid': page_obj,
                 'empty': empty,
             }
         else:

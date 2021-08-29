@@ -56,8 +56,8 @@
             <div class="card">
                 <div class="demo">
                     <ul id="lightSlider">
-                        <li data-thumb="{{ menu_item_variant.menu_item.image_set.last.image.url }}"><img
-                                src="{{ menu_item_variant.menu_item.image_set.last.image.url }}"/>
+                        <li data-thumb="{{ menu_item_variant.menu_item.image_set.last.image.url }}">
+                            <img src="{{ menu_item_variant.menu_item.image_set.last.image.url }}"/>
                         </li>
                         {% for i in menu_item_variant.menu_item.image_set.all %}
                             <li data-thumb="{{ i.image.url }}"><img src="{{ i.image.url }}"/>
@@ -95,7 +95,7 @@
 
                         {# variant - radio#}
                         {% if menu_item_variant.menu_item.status %}
-                            <form method="post">
+                            <form method="post" {% if language == 'fa' %}style="direction: rtl" {% endif %}>
                                 {% csrf_token %}
                                 <p>{{ menu_item_variant.menu_item.variable_specification_name }}:
                                     {% for i in variants %}

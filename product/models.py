@@ -38,6 +38,10 @@ class Category(BaseModel, TimestampMixin):
     def __str__(self):
         return f"{self.id}# {self.name}"
 
+    class Meta:
+        verbose_name = _('Category')
+        verbose_name_plural = _('Categories')
+
 
 class Discount(BaseModel, TimestampMixin):
     is_percent = models.BooleanField(
@@ -98,6 +102,10 @@ class Discount(BaseModel, TimestampMixin):
         else:
             return f"{self.id}# {self.price}$ , max = {self.max} , expire-date = {self.expire_date_time} , {self.is_expired()}"
 
+    class Meta:
+        verbose_name = _('Discount')
+        verbose_name_plural = _('Discounts')
+
 
 class OffCode(Discount):
     code = models.CharField(
@@ -106,6 +114,10 @@ class OffCode(Discount):
         validators=[off_code_validator],
         help_text=_('Enter the off code'),
     )
+
+    class Meta:
+        verbose_name = _('OffCode')
+        verbose_name_plural = _('OffCodes')
 
 
 """"
@@ -124,6 +136,10 @@ class Brand(BaseModel, TimestampMixin):
     def __str__(self):
         return f"{self.name}"
 
+    class Meta:
+        verbose_name = _('Brand')
+        verbose_name_plural = _('Brands')
+
 
 class Image(BaseModel, TimestampMixin):
     image = models.FileField(
@@ -137,6 +153,10 @@ class Image(BaseModel, TimestampMixin):
         verbose_name=_('menu item for this image'),
         help_text=_('Enter the menu item for this image'),
     )
+
+    class Meta:
+        verbose_name = _('Image')
+        verbose_name_plural = _('Images')
 
 
 class Specification(BaseModel, TimestampMixin):
@@ -154,6 +174,10 @@ class Specification(BaseModel, TimestampMixin):
     def __str__(self):
         return f"{self.id}# {self.name} : {self.value}"
 
+    class Meta:
+        verbose_name = _('Specification')
+        verbose_name_plural = _('Specifications')
+
 
 class VariableSpecification(BaseModel, TimestampMixin):
     name = models.CharField(
@@ -169,6 +193,10 @@ class VariableSpecification(BaseModel, TimestampMixin):
 
     def __str__(self):
         return f"{self.id}# {self.name} : {self.value}"
+
+    class Meta:
+        verbose_name = _('VariableSpecification')
+        verbose_name_plural = _('VariableSpecifications')
 
 
 class MenuItem(BaseModel, TimestampMixin):
@@ -248,6 +276,10 @@ class MenuItem(BaseModel, TimestampMixin):
     def __str__(self):
         return f"{self.id}#   {self.name} "
 
+    class Meta:
+        verbose_name = _('MenuItem')
+        verbose_name_plural = _('MenuItems')
+
 
 class MenuItemVariant(BaseModel, TimestampMixin):
     menu_item = models.ForeignKey(
@@ -289,7 +321,7 @@ class MenuItemVariant(BaseModel, TimestampMixin):
     un_likes = models.ManyToManyField(
         User,
         blank=True,
-        verbose_name=_('Un Likes'),
+        verbose_name=_('DisLikes'),
         related_name='menu_item_variants_un_likes',
     )
 
@@ -312,6 +344,10 @@ class MenuItemVariant(BaseModel, TimestampMixin):
 
     def __str__(self):
         return f"{self.id}#   {self.menu_item.name} : {self.price} ------> final price = {self.final_price()}"
+
+    class Meta:
+        verbose_name = _('MenuItemVariant')
+        verbose_name_plural = _('MenuItemsVariants')
 
 
 class Comment(BaseModel, TimestampMixin):
@@ -337,6 +373,7 @@ class Comment(BaseModel, TimestampMixin):
         related_name='comment_childes',
     )
     is_reply = models.BooleanField(
+        verbose_name=_('is reply?'),
         default=False,
     )
     likes = models.ManyToManyField(
@@ -366,6 +403,10 @@ class Comment(BaseModel, TimestampMixin):
     def __str__(self):
         return f"{self.id}# {self.user.phone} : {self.menu_item.name}"
 
+    class Meta:
+        verbose_name = _('Comment')
+        verbose_name_plural = _('Comments')
+
 
 class Gallery(models.Model):
     name = models.CharField(
@@ -386,3 +427,7 @@ class Gallery(models.Model):
         blank=True,
         null=True,
     )
+
+    class Meta:
+        verbose_name = _('Image Gallery')
+        verbose_name_plural = _('Image Galleries')

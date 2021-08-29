@@ -1,11 +1,12 @@
-{% extends 'base/base.html' %}
+{#{% extends 'base/base.html' %}#}
+{% extends 'customer/profile.html' %}
 {% load static %}
 {% load i18n %}
 {% block Title %}{% trans 'Update Address' %}{% endblock %}
 {% block ExtraHead %}
     <link rel="stylesheet" href="{% static 'customer/css/register.css' %}">
 {% endblock %}
-{% block ExtraStyle %}
+{% block ExtraStyle1 %}
     <style>
         form label {
             display: block;
@@ -13,7 +14,7 @@
         }
     </style>
 {% endblock %}
-{% block Body %}
+{% block Profile %}
     <div class="my-form">
         <form method="post">
             {% csrf_token %}

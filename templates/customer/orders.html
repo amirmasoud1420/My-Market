@@ -1,0 +1,101 @@
+{% extends 'customer/profile.html' %}
+{% load static %}
+{% load i18n %}
+{% block Title %}{% trans 'Orders History' %}{% endblock %}
+{% block ExtraStyle1 %}
+    <style>
+        .modal-img-box {
+            height: 70px;
+            width: 70px;
+        }
+
+        .modal-img {
+            height: 60px;
+            width: auto;
+            max-width: 60px;
+        }
+    </style>
+{% endblock %}
+{% block Profile %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">{% trans 'Number' %}</th>
+            <th scope="col">{% trans 'DateTime' %}</th>
+            <th scope="col">{% trans 'Status' %}</th>
+            <th scope="col">{% trans 'FinalPrice' %}</th>
+            <th scope="col">{% trans 'Detail' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in orders %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ i.create_time_stamp }}</td>
+                <td>
+                    {% if i.status == 'd' %}
+                        {% trans 'during' %}
+                    {% elif i.status == 'p' %}
+                        {% trans 'paid' %}
+                    {% else %}
+                        {% trans 'canceled' %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if i.status == 'd' %}
+                        {{ i.final_price }}
+                    {% else %}
+                        {{ i.paid_price }}
+                    {% endif %}
+                </td>
+                <td>
+                    <!-- Button trigger modal -->
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#s{{ i.id }}">
+                        {% trans 'detail' %}
+                    </a>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="s{{ i.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'order detail' %}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    {% for o in i.ordermenuitem_set.all %}
+                                        <div class="row">
+                                            <div class="col-4 modal-img-box">
+                                                <img class="modal-img"
+                                                     src="{{ o.menu_item_variant.menu_item.image_set.last.image.url }}">
+                                            </div>
+                                            <div class="col-4">
+                                                <p style="margin-top: 1rem">{{ o.menu_item_variant.menu_item.name }}</p>
+                                            </div>
+                                            <div class="col-4">
+                                                <p style="margin-top: 1rem">
+                                                    {% trans 'quantity : ' %}{{ o.quantity }}</p>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">{% trans 'Close' %}
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="row pag">
+        {% include 'base/pagination.html' with menu_items=page_obj %}
+    </div>
+{% endblock %}

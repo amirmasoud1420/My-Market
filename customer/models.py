@@ -31,6 +31,10 @@ class Customer(BaseModel, TimestampMixin):
     def __str__(self):
         return f"{self.id}# {self.user.phone}"
 
+    class Meta:
+        verbose_name = _('Customer')
+        verbose_name_plural = _('Customers')
+
 
 class Address(BaseModel, TimestampMixin):
     owner = models.ForeignKey(
@@ -67,3 +71,7 @@ class Address(BaseModel, TimestampMixin):
 
     def __str__(self):
         return f"{self.id}#{self.owner.user.phone} : {self.state}-{self.city}"
+
+    class Meta:
+        verbose_name = _('Address')
+        verbose_name_plural = _('Addresses')

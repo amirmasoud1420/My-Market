@@ -73,8 +73,11 @@
             </div>
         {% endfor %}
 
-
+        <div class="row pag">
+            {% include 'base/pagination.html' with menu_items=order_canceled %}
+        </div>
     {% endif %}
+
     <div class="div-cart">
         <a class="btn btn-primary but-cart" href="{% url 'order:paid_order_detail' %}">paid</a>
         <a class="btn btn-primary but-cart" href="{% url 'order:order_detail' %}">cart</a>

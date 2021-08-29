@@ -100,16 +100,19 @@ class MenuItemVariantDetailView(View):
         menu_item_variant = get_object_or_404(MenuItemVariant, id=kwargs['pk'])
 
         is_like = False
-        if menu_item_variant.likes.filter(id=request.user.id).exists():
-            is_like = True
+        if request.user.is_authenticated:
+            if menu_item_variant.likes.filter(id=request.user.id).exists():
+                is_like = True
 
         is_dislike = False
-        if menu_item_variant.un_likes.filter(id=request.user.id).exists():
-            is_dislike = True
+        if request.user.is_authenticated:
+            if menu_item_variant.un_likes.filter(id=request.user.id).exists():
+                is_dislike = True
 
         is_favorites = False
-        if menu_item_variant.menu_item.favorites_customers.filter(user=request.user).exists():
-            is_favorites = True
+        if request.user.is_authenticated:
+            if menu_item_variant.menu_item.favorites_customers.filter(user=request.user).exists():
+                is_favorites = True
 
         variants = menu_item_variant.menu_item.menuitemvariant_set.all()
         similar_product = menu_item_variant.menu_item.tags.similar_objects()[:5]
@@ -137,16 +140,19 @@ class MenuItemVariantDetailView(View):
         menu_item_variant = get_object_or_404(MenuItemVariant, id=request.POST.get('select'))
 
         is_like = False
-        if menu_item_variant.likes.filter(id=request.user.id).exists():
-            is_like = True
+        if request.user.is_authenticated:
+            if menu_item_variant.likes.filter(id=request.user.id).exists():
+                is_like = True
 
         is_dislike = False
-        if menu_item_variant.un_likes.filter(id=request.user.id).exists():
-            is_dislike = True
+        if request.user.is_authenticated:
+            if menu_item_variant.un_likes.filter(id=request.user.id).exists():
+                is_dislike = True
 
         is_favorites = False
-        if menu_item_variant.menu_item.favorites_customers.filter(user=request.user).exists():
-            is_favorites = True
+        if request.user.is_authenticated:
+            if menu_item_variant.menu_item.favorites_customers.filter(user=request.user).exists():
+                is_favorites = True
 
         variants = menu_item_variant.menu_item.menuitemvariant_set.all()
         similar_product = menu_item_variant.menu_item.tags.similar_objects()[:5]

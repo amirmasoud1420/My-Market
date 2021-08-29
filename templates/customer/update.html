@@ -1,11 +1,12 @@
-{% extends 'base/base.html' %}
+{#{% extends 'base/base.html' %}#}
+{% extends 'customer/profile.html' %}
 {% load static %}
 {% load i18n %}
 {% block Title %}{% trans 'update profile' %}{% endblock %}
 {% block ExtraHead %}
     <link rel="stylesheet" href="{% static 'customer/css/register.css' %}">
 {% endblock %}
-{% block ExtraStyle %}
+{% block ExtraStyle1 %}
     <style>
         form label {
             display: block;
@@ -14,7 +15,7 @@
 
     </style>
 {% endblock %}
-{% block Body %}
+{% block Profile %}
     <div class="my-form">
         <form method="post" action="{% url 'customer:customer_profile_update' %}" enctype="multipart/form-data">
             {% csrf_token %}

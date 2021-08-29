@@ -6,16 +6,16 @@ from django.utils.translation import gettext_lazy as _
 
 class MenuItemVariantFilter(django_filters.FilterSet):
     choice_1 = {
-        ('highest price', 'highest price'),
-        ('lowest price', 'lowest price'),
+        (_('highest price'), 'highest price'),
+        (_('lowest price'), 'lowest price'),
     }
     choice_2 = {
-        ('oldest', 'oldest'),
-        ('newest', 'newest'),
+        (_('oldest'), 'oldest'),
+        (_('newest'), 'newest'),
     }
     choice_3 = {
-        ('most discount', 'most discount'),
-        ('lowest discount', 'lowest discount'),
+        (_('most discount'), 'most discount'),
+        (_('lowest discount'), 'lowest discount'),
     }
     price_lt = django_filters.NumberFilter(field_name='price', lookup_expr='lte')
     price_gt = django_filters.NumberFilter(field_name='price', lookup_expr='gte')
@@ -38,8 +38,8 @@ class MenuItemVariantFilter(django_filters.FilterSet):
 
 class MenuItemFilter(django_filters.FilterSet):
     choice_1 = {
-        ('bestselling', 'bestselling'),
-        ('lowest sales', 'lowest sales'),
+        (_('bestselling'), 'bestselling'),
+        (_('lowest sales'), 'lowest sales'),
     }
     brand = django_filters.ModelMultipleChoiceFilter(
         queryset=Brand.objects.all(),

@@ -97,72 +97,82 @@
             margin-top: 4rem;
         }
     </style>
+    {% block ExtraStyle1 %}{% endblock %}
 {% endblock %}
 {% block Body %}
-    <div class="container">
-        <div class="row profile">
-            <div class="col-md-3">
-                <div class="profile-sidebar">
-                    <!-- SIDEBAR USERPIC -->
-                    <div style="margin: auto;text-align: center" class="profile-userpic">
-                        <img style="margin: auto" src={% static customer.image %}
-                                class="img-responsive" alt="">
-                    </div>
-                    <!-- END SIDEBAR USERPIC -->
-                    <!-- SIDEBAR USER TITLE -->
-                    <div class="profile-usertitle">
-                        <div class="profile-usertitle-name">
-                            {{ customer.user.first_name }}{% trans ' ' %}{% trans ' ' %}{{ customer.user.last_name }}
-                        </div>
+    {% if language == 'fa' %}
+        <div class="container" dir="rtl">
+    {% else %}
+        <div class="container">
+    {% endif %}
 
-                    </div>
+<div class="row profile">
+    <div class="col-md-3">
+        <div class="profile-sidebar">
+            <!-- SIDEBAR USERPIC -->
+            <div style="margin: auto;text-align: center" class="profile-userpic">
+                <img style="margin: auto" src={% static customer.image %}
+                        class="img-responsive" alt="">
+            </div>
+            <!-- END SIDEBAR USERPIC -->
+            <!-- SIDEBAR USER TITLE -->
+            <div class="profile-usertitle">
+                <div class="profile-usertitle-name">
+                    {{ customer.user.first_name }}{% trans ' ' %}{% trans ' ' %}{{ customer.user.last_name }}
+                </div>
+
+            </div>
 
 
-                    <div class="portlet light bordered">
+            <div class="portlet light bordered">
 
-                        <div>
-                            <h4 class="profile-desc-title">{% trans 'Phone Number' %}</h4>
-                            <p class="profile-desc-text">{{ customer.user.phone }}</p>
-                            <h4 class="profile-desc-title">{% trans 'Email' %}</h4>
-                            <p class="profile-desc-text">{{ customer.user.email }}</p>
-
-                        </div>
-
-                    </div>
-
+                <div>
+                    <h4 class="profile-desc-title">{% trans 'Phone Number' %}</h4>
+                    <p class="profile-desc-text">{{ customer.user.phone }}</p>
+                    <h4 class="profile-desc-title">{% trans 'Email' %}</h4>
+                    <p class="profile-desc-text">{{ customer.user.email }}</p>
 
                 </div>
+
             </div>
-            <div class="col-md-9">
-                <div class="profile-content">
-                    <div class="row">
-
-                        <div class="col-12 col-lg-6" style="text-align: center;">
-                            {% for add in customer.address_set.all %}
-                                {% include 'customer/address.html' with address=add %}
-                            {% endfor %}
-                        </div>
-
-                        <div class="col-12 col-lg-6">
-                            <div class="row">
-                                <a class="btn btn-success cus-btn" style="margin: auto"
-                                   href={% url 'customer:customer_profile_update' %}>{% trans 'Update' %}</a>
-                                <p></p>
-                                <a class="btn btn-success cus-btn" style="margin: auto"
-                                   href={% url 'customer:add_address' %}>{% trans 'Add Address' %}</a>
-                                <p></p>
-                                <a class="btn btn-success cus-btn" style="margin: auto;text-align: center"
-                                   href={% url 'customer:change_password' %}>{% trans 'Change Password' %}</a>
-                                <p></p>
-                                <a class="btn btn-success cus-btn" style="margin: auto;text-align: center"
-                                   href="{% url 'customer:favorites' %}">favorites</a>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
+            <div class="row">
+                <a class="btn btn-success cus-btn" style="margin: auto"
+                   href={% url 'customer:customer_profile' %}>{% trans 'Dashboard' %}</a>
+                <p></p>
+                <a class="btn btn-success cus-btn" style="margin: auto"
+                   href={% url 'customer:customer_profile_update' %}>{% trans 'Update Profile' %}</a>
+                <p></p>
+                <a class="btn btn-success cus-btn" style="margin: auto"
+                   href={% url 'customer:add_address' %}>{% trans 'Add Address' %}</a>
+                <p></p>
+                <a class="btn btn-success cus-btn" style="margin: auto;text-align: center"
+                   href={% url 'customer:change_password' %}>{% trans 'Change Password' %}</a>
+                <p></p>
+                <a class="btn btn-success cus-btn" style="margin: auto;text-align: center"
+                   href="{% url 'customer:favorites' %}">{% trans 'Favorites' %}</a>
+                <p></p>
+                <a class="btn btn-success cus-btn" style="margin: auto;text-align: center"
+                   href="{% url 'customer:order_history' %}">{% trans 'Orders History' %}</a>
             </div>
+
         </div>
     </div>
+    <div class="col-md-9">
+        {% block Profile %}
+            <div class="profile-content">
+                <div class="row">
+                    {% for add in customer.address_set.all %}
+                        <div class="col-12 col-lg-6" style="text-align: center;">
+
+                            {% include 'customer/address.html' with address=add %}
+
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+</div>
+</div>
 {% endblock %}

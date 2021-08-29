@@ -22,10 +22,8 @@
         }
 
         .order-box {
-            {#color: white;#}
-            color: black;
-        {#background-color: darkslateblue;#}
-            background-color: #c2d605;
+        {#color: white;#} color: black;
+        {#background-color: darkslateblue;#} background-color: #c2d605;
             height: 200px;
             text-align: center;
             margin: auto;
@@ -188,8 +186,11 @@
             </a>
         </div>
 
-
+        <div class="row pag">
+            {% include 'base/pagination.html' with menu_items=order_during %}
+        </div>
     {% endif %}
+
     <div class="div-cart">
         <a class="btn btn-primary but-cart" href="{% url 'order:canceled_order_detail' %}">canceled</a>
         <a class="btn btn-primary but-cart" href="{% url 'order:paid_order_detail' %}">paid</a>

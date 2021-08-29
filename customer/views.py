@@ -12,6 +12,8 @@ from django.contrib.auth import authenticate, login, logout, forms, update_sessi
 from django.contrib import messages
 from django.core.paginator import Paginator
 from product.models import *
+from order.models import *
+
 
 # Create your views here.
 
@@ -41,6 +43,10 @@ class CustomerRegisterView(generic.FormView):
         login(self.request, user)
         messages.success(self.request, _('Registration completed successfully'), 'success')
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        kwargs['category'] = Category.objects.filter(is_sub_category=False)
+        return super().get_context_data(**kwargs)
 
 
 # class CustomerLoginView(generic.FormView):
@@ -86,6 +92,10 @@ class CustomerLoginView(LoginView):
             return redirect('customer:customer_login')
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        kwargs['category'] = Category.objects.filter(is_sub_category=False)
+        return super().get_context_data(**kwargs)
+
 
 class CustomerLogoutView(generic.View):
 
@@ -103,13 +113,18 @@ class CustomerProfileView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return Customer.objects.get(user=self.request.user)
 
+    def get_context_data(self, **kwargs):
+        kwargs['category'] = Category.objects.filter(is_sub_category=False)
+        return super().get_context_data(**kwargs)
+
 
 class CustomerProfileUpdateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         user_form = UserUpdateForm(instance=request.user)
         customer_form = CustomerUpdateForm(instance=Customer.objects.get(user=request.user))
         category = Category.objects.filter(is_sub_category=False)
-        context = {'user_form': user_form, 'customer_form': customer_form, 'category': category}
+        customer = Customer.objects.get(user=self.request.user)
+        context = {'user_form': user_form, 'customer_form': customer_form, 'category': category, 'customer': customer}
         return render(request, 'customer/update.html', context)
 
     def post(self, request, *args, **kwargs):
@@ -131,6 +146,11 @@ class AddressCreateView(LoginRequiredMixin, generic.FormView):
     form_class = AddressFormModel
     success_url = reverse_lazy('customer:customer_profile')
 
+    def get_context_data(self, **kwargs):
+        kwargs['customer'] = Customer.objects.get(user=self.request.user)
+        kwargs['category'] = Category.objects.filter(is_sub_category=False)
+        return super().get_context_data(**kwargs)
+
     def form_valid(self, form):
         messages.success(self.request, _('Add address was successful'), 'success')
         owner = Customer.objects.get(user=self.request.user)
@@ -151,7 +171,9 @@ class AddressUpdateView(LoginRequiredMixin, View):
             messages.error(self.request, _('No Permission'), 'danger')
             return redirect('customer:customer_profile')
         address_form = AddressFormModel(instance=address)
-        context = {'form': address_form}
+        customer = Customer.objects.get(user=self.request.user)
+        category = Category.objects.filter(is_sub_category=False)
+        context = {'form': address_form, 'customer': customer, 'category': category}
         return render(request, 'customer/update_address.html', context)
 
     def post(self, request, *args, **kwargs):
@@ -181,7 +203,10 @@ class AddressDeleteView(LoginRequiredMixin, View):
 class ChangePasswordView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         form = forms.PasswordChangeForm(request.user)
-        return render(request, 'customer/change_password.html', {'form': form})
+        customer = Customer.objects.get(user=self.request.user)
+        category = Category.objects.filter(is_sub_category=False)
+        return render(request, 'customer/change_password.html',
+                      {'form': form, 'customer': customer, 'category': category})
 
     def post(self, request, *args, **kwargs):
         form = forms.PasswordChangeForm(request.user, request.POST)
@@ -203,4 +228,21 @@ class FavoritesView(LoginRequiredMixin, View):
         paginator = Paginator(favorites, 12)
         page_num = request.GET.get('page')
         page_obj = paginator.get_page(page_num)
-        return render(request, 'customer/favorites.html', {'favorites': page_obj})
+        customer = Customer.objects.get(user=self.request.user)
+        category = Category.objects.filter(is_sub_category=False)
+        return render(request, 'customer/favorites.html',
+                      {'favorites': page_obj, 'customer': customer, 'category': category})
+
+
+class OrderListView(generic.ListView):
+    template_name = 'customer/orders.html'
+    context_object_name = 'orders'
+    paginate_by = 20
+
+    def get_queryset(self):
+        return Order.objects.filter(customer__user=self.request.user).order_by('-create_time_stamp')
+
+    def get_context_data(self, **kwargs):
+        kwargs['customer'] = Customer.objects.get(user=self.request.user)
+        kwargs['category'] = Category.objects.filter(is_sub_category=False)
+        return super().get_context_data(**kwargs)
