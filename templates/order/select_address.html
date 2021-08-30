@@ -5,7 +5,12 @@
 {% block ExtraStyle %}
     <style>
         #h1-is-empty {
+        {% if language == 'fa' %}
+            font-family: IRANSans;
+        {% else %}
             font-family: Andalus;
+        {% endif %}
+
             color: #052953;
             margin: auto;
             text-align: center;
