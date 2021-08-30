@@ -1,7 +1,18 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% load i18n %}
-{% block Title %}{{ menu_item_variant.menu_item.name }}{% endblock %}
+{% block Title %}
+    {% if language == 'fa' %}
+        {% if menu_item_variant.menu_item.name_fa %}
+            {{ menu_item_variant.menu_item.name_fa }}
+        {% else %}
+            {{ menu_item_variant.menu_item.name }}
+        {% endif %}
+    {% else %}
+        {{ menu_item_variant.menu_item.name }}
+    {% endif %}
+
+{% endblock %}
 {% block ExtraHead %}
     <link rel="stylesheet" href="{% static 'product/css/comment.css' %}">
 {% endblock %}
@@ -82,7 +93,18 @@
                     <div class=" col-12 col-lg-6" style="margin-top: 1rem">
 
                         {#Name#}
-                        <h3>{{ menu_item_variant.menu_item.name }}</h3>
+                        <h3>
+                            {% if language == 'fa' %}
+                                {% if menu_item_variant.menu_item.name_fa %}
+                                    {{ menu_item_variant.menu_item.name_fa }}
+                                {% else %}
+                                    {{ menu_item_variant.menu_item.name }}
+                                {% endif %}
+                            {% else %}
+                                {{ menu_item_variant.menu_item.name }}
+                            {% endif %}
+
+                        </h3>
 
                         {# Rate#}
                         <h4>{% trans 'rate average :' %}&nbsp;&nbsp;{{ menu_item_variant.menu_item.average_rate }}&nbsp;(5)</h4>
@@ -97,10 +119,33 @@
                         {% if menu_item_variant.menu_item.status %}
                             <form method="post" {% if language == 'fa' %}style="direction: rtl" {% endif %}>
                                 {% csrf_token %}
-                                <p>{{ menu_item_variant.menu_item.variable_specification_name }}:
+                                <p>
+                                    {% if language == 'fa' %}
+                                        {% if menu_item_variant.menu_item.variable_specification_name_fa %}
+                                            {{ menu_item_variant.menu_item.variable_specification_name_fa }}:
+                                        {% else %}
+                                            {{ menu_item_variant.menu_item.variable_specification_name }}:
+                                        {% endif %}
+                                    {% else %}
+                                        {{ menu_item_variant.menu_item.variable_specification_name }}:
+                                    {% endif %}
+                                    {{ menu_item_variant.menu_item.variable_specification_name }}:
+
                                     {% for i in variants %}
 
-                                        <small>{{ i.variable_specification_value }}</small>
+
+                                        <small>
+                                            {% if language == 'fa' %}
+                                                {% if i.variable_specification_value_fa %}
+                                                    {{ i.variable_specification_value_fa }}
+                                                {% else %}
+                                                    {{ i.variable_specification_value }}
+                                                {% endif %}
+                                            {% else %}
+                                                {{ i.variable_specification_value }}
+                                            {% endif %}
+
+                                        </small>
                                         <input type="radio" value="{{ i.id }}" name="select"
                                                {% if i == menu_item_variant %}checked{% endif %}
                                                onchange="this.form.submit();">
@@ -145,9 +190,9 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-{##}
-{#                                <th scope="col">{% trans 'Name' %}</th>#}
-{#                                <th scope="col">{% trans 'Value' %}</th>#}
+                                {##}
+                                {#                                <th scope="col">{% trans 'Name' %}</th>#}
+                                {#                                <th scope="col">{% trans 'Value' %}</th>#}
 
                             </tr>
                             </thead>
@@ -155,8 +200,30 @@
                             {% for i in menu_item_variant.menu_item.specifications.all %}
                                 <tr>
 
-                                    <td><b>{{ i.name }}</b></td>
-                                    <td style="text-align: center">{{ i.value }}</td>
+                                    <td><b>
+                                        {% if language == 'fa' %}
+                                            {% if i.name_fa %}
+                                                {{ i.name_fa }}
+                                            {% else %}
+                                                {{ i.name }}
+                                            {% endif %}
+                                        {% else %}
+                                            {{ i.name }}
+                                        {% endif %}
+
+                                    </b></td>
+                                    <td style="text-align: center">
+                                        {% if language == 'fa' %}
+                                            {% if i.value_fa %}
+                                                {{ i.value_fa }}
+                                            {% else %}
+                                                {{ i.value }}
+                                            {% endif %}
+                                        {% else %}
+                                            {{ i.value }}
+                                        {% endif %}
+
+                                    </td>
 
                                 </tr>
                             {% endfor %}
@@ -169,7 +236,18 @@
 
 
         <div class="row" style="text-align: center;margin: auto;margin-top: 3rem">
-            <p>{{ menu_item_variant.menu_item.description|safe }} </p>
+            <p>
+                {% if language == 'fa' %}
+                    {% if menu_item_variant.menu_item.description_fa %}
+                        {{ menu_item_variant.menu_item.description_fa|safe }}
+                    {% else %}
+                        {{ menu_item_variant.menu_item.description|safe }}
+                    {% endif %}
+                {% else %}
+                    {{ menu_item_variant.menu_item.description|safe }}
+                {% endif %}
+
+            </p>
         </div>
 
 

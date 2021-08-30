@@ -25,7 +25,11 @@
 </head>
 <style>
     body, h1, h2, h3, h4, h5 {
+    {% if language == 'fa' %}
+        font-family: IRANSans;
+    {% else %}
         font-family: "Raleway", sans-serif
+    {% endif %}
     }
 
     body {

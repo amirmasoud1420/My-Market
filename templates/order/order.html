@@ -123,7 +123,7 @@
 
     {% if empty %}
         <div style="margin:auto;text-align: center">
-            <h1 style="margin:auto;text-align: center;font-family: Andalus;color: #052953">{% trans 'Your Cart Is Empty' %}</h1>
+            <h1 style="margin:auto;text-align: center;{% if language == 'fa' %}font-family: IRANSans;{% else %}font-family: Andalus;{% endif %}color: #052953">{% trans 'Your Cart Is Empty' %}</h1>
         </div>
     {% else %}
 
@@ -168,7 +168,18 @@
 
                         </div>
                         <div class="col-1 col-sm-2" id="order-item-name">
-                            <p class="menu-item-name">{{ j.menu_item_variant.menu_item.name }}</p>
+                            <p class="menu-item-name">
+                                {% if language == 'fa' %}
+                                    {% if j.menu_item_variant.menu_item.name_fa %}
+                                        {{ j.menu_item_variant.menu_item.name_fa }}
+                                    {% else %}
+                                        {{ j.menu_item_variant.menu_item.name }}
+                                    {% endif %}
+                                {% else %}
+                                    {{ j.menu_item_variant.menu_item.name }}
+                                {% endif %}
+
+                            </p>
                         </div>
                         <div class="col-1 col-sm-2" id="order-item-img">
                             <img class="order-img"
@@ -192,8 +203,8 @@
     {% endif %}
 
     <div class="div-cart">
-        <a class="btn btn-primary but-cart" href="{% url 'order:canceled_order_detail' %}">canceled</a>
-        <a class="btn btn-primary but-cart" href="{% url 'order:paid_order_detail' %}">paid</a>
+        <a class="btn btn-primary but-cart" href="{% url 'order:canceled_order_detail' %}">{% trans 'canceled' %}</a>
+        <a class="btn btn-primary but-cart" href="{% url 'order:paid_order_detail' %}">{% trans 'paid' %}</a>
     </div>
 
     {#    <script>#}

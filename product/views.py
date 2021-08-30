@@ -296,7 +296,12 @@ class ProductSearchView(View):
                         Q(menuitemvariant__price__exact=int(data['key']))
                     )
                 else:
-                    menu_items = menu_items.filter(name__icontains=data['key'])
+                    menu_items = menu_items.filter(
+                        Q(name_fa__icontains=data['key']) |
+                        Q(name__icontains=data['key']) |
+                        Q(brand__name__icontains=data['key']) |
+                        Q(brand__name_fa__icontains=data['key'])
+                    )
             return render(request, 'menu_item/search_list.html', {'menu_items': menu_items})
         else:
             messages.error(self.request, _('Search Failed!'), 'danger')

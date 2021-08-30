@@ -20,8 +20,29 @@
                     <img src="{{ i.image.url }}" class="d-block "
                          style="height: 800px;width: auto;max-width: 100%;margin: auto">
                     <div class="carousel-caption d-none d-md-block">
-                        <h5>{{ i.name }}</h5>
-                        <p>{{ i.description }}</p>
+                        <h5>
+                            {% if language == 'fa' %}
+                                {% if i.name_fa %}
+                                    {{ i.name_fa }}
+                                {% else %}
+                                    {{ i.name }}
+                                {% endif %}
+                            {% else %}
+                                {{ i.name }}
+                            {% endif %}
+                        </h5>
+                        <p>
+                            {% if language == 'fa' %}
+                                {% if i.description_fa %}
+                                    {{ i.description_fa }}
+                                {% else %}
+                                    {{ i.description }}
+                                {% endif %}
+                            {% else %}
+                                {{ i.description }}
+                            {% endif %}
+
+                        </p>
                     </div>
                 </div>
             {% endfor %}

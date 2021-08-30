@@ -18,6 +18,12 @@ class Category(BaseModel, TimestampMixin):
         verbose_name=_('Name'),
         help_text=_('Category Name'),
     )
+    name_fa = models.CharField(
+        max_length=50,
+        verbose_name=_('PersianName'),
+        null=True,
+        blank=True,
+    )
     parent = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
@@ -132,6 +138,12 @@ class Brand(BaseModel, TimestampMixin):
         help_text=_('Enter the brand name'),
         # validators=[menu_item_name_validator],
     )
+    name_fa = models.CharField(
+        max_length=50,
+        verbose_name=_('PersianName'),
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return f"{self.name}"
@@ -165,10 +177,22 @@ class Specification(BaseModel, TimestampMixin):
         verbose_name=_('Specification name'),
         help_text=_('Enter the Specification name'),
     )
+    name_fa = models.CharField(
+        max_length=200,
+        verbose_name=_('PersianName'),
+        null=True,
+        blank=True,
+    )
     value = models.CharField(
         max_length=200,
         verbose_name=_('Specification Value'),
         help_text=_('Enter the Specification value'),
+    )
+    value_fa = models.CharField(
+        max_length=200,
+        verbose_name=_('PersianValue'),
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
@@ -201,12 +225,17 @@ class VariableSpecification(BaseModel, TimestampMixin):
 
 class MenuItem(BaseModel, TimestampMixin):
     name = models.CharField(
-        max_length=30,
+        max_length=50,
         verbose_name=_('menu item name'),
         help_text=_('Enter the Menu items name'),
 
     )
-
+    name_fa = models.CharField(
+        max_length=50,
+        verbose_name=_('PersianName'),
+        null=True,
+        blank=True,
+    )
     category = models.ManyToManyField(
         Category,
         verbose_name=_('menu item category'),
@@ -230,6 +259,11 @@ class MenuItem(BaseModel, TimestampMixin):
         null=True,
         blank=True,
     )
+    description_fa = RichTextUploadingField(
+        verbose_name=_('PersianDescription'),
+        null=True,
+        blank=True,
+    )
 
     status = models.BooleanField(
         verbose_name=_('variant status'),
@@ -239,7 +273,13 @@ class MenuItem(BaseModel, TimestampMixin):
     variable_specification_name = models.CharField(
         verbose_name=_('Variable Specification name'),
         help_text=_('variable specification name'),
-        max_length=30,
+        max_length=50,
+        null=True,
+        blank=True,
+    )
+    variable_specification_name_fa = models.CharField(
+        verbose_name=_('Variable Specification persian name'),
+        max_length=50,
         null=True,
         blank=True,
     )
@@ -309,8 +349,14 @@ class MenuItemVariant(BaseModel, TimestampMixin):
     variable_specification_value = models.CharField(
         verbose_name=_('Variable Specification Value'),
         help_text=_('variable specification value'),
-        max_length=30,
+        max_length=50,
         default=_('Not entered'),
+    )
+    variable_specification_value_fa = models.CharField(
+        verbose_name=_('Variable Specification persian Value'),
+        max_length=50,
+        null=True,
+        blank=True,
     )
     likes = models.ManyToManyField(
         User,
@@ -415,8 +461,20 @@ class Gallery(models.Model):
         blank=True,
         null=True,
     )
+    name_fa = models.CharField(
+        verbose_name=_('image persian name'),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
     description = models.CharField(
         verbose_name=_('description'),
+        max_length=300,
+        blank=True,
+        null=True,
+    )
+    description_fa = models.CharField(
+        verbose_name=_('Persian description'),
         max_length=300,
         blank=True,
         null=True,
