@@ -192,14 +192,15 @@
         {% endfor %}
         <div class="c-order-btn">
 
-            <a href="{% url 'order:create_order' order_during.last.order.id %}" class="btn btn-success ">
+            <a href="{% url 'order:create_order' pk=order_during.last.order.id %}" class="btn btn-success "
+               style="{% if language == 'fa' %}font-family: IRANSans;{% else %}font-family: Andalus;{% endif %}">
                 {% trans 'create order' %}
             </a>
         </div>
 
-        <div class="row pag">
-            {% include 'base/pagination.html' with menu_items=order_during %}
-        </div>
+        {#        <div class="row pag">#}
+        {#            {% include 'base/pagination.html' with menu_items=order_during %}#}
+        {#        </div>#}
     {% endif %}
 
     <div class="div-cart">
