@@ -29,8 +29,10 @@ class HomeView(View):
         search_form = SearchForm()
         category = Category.objects.filter(is_sub_category=False)
         gallery = Gallery.objects.all()
-        create = MenuItem.objects.all().order_by('-create_time_stamp')[:6]
+        create = MenuItem.objects.all().order_by('-create_time_stamp')[:4]
+        most_sell = MenuItem.objects.all().order_by('-sell')[:4]
         context = {
+            'most_sell': most_sell,
             'create': create,
             'gallery': gallery,
             'category': category,

@@ -217,10 +217,10 @@ LOGGING = {
         },
     },
 }
-
-LOGIN_URL = '/customer/login/'
+from django.urls import reverse_lazy
+LOGIN_URL = reverse_lazy('customer:customer_login')
 # LOGIN_REDIRECT_URL = '/customer/profile/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = reverse_lazy('home')
 
 CKEDITOR_UPLOAD_PATH = 'ck/'
 CKEDITOR_CONFIGS = {

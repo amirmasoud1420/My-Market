@@ -2,6 +2,28 @@
 {% load i18n %}
 {% load static %}
 {% block Title %}{% trans 'Home' %}{% endblock %}
+{% block ExtraStyle %}
+    <style>
+        .home-img-box {
+            margin: auto;
+            margin-top: 1rem;
+            margin-bottom: 5rem;
+            text-align: center;
+            height: 200px;
+
+        }
+
+        .home-img-box img {
+            height: 170px;
+            width: auto;
+            max-width: 100%;
+        }
+        .home-img-box h5{
+            margin-top: 1rem;
+            margin-bottom: 3rem;
+        }
+    </style>
+{% endblock %}
 {% block Body %}
     <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
@@ -58,21 +80,99 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
-
-    <!-- Swiper -->
-    <div class="container-fluid" style="margin-top: 3rem;">
-        <div class="swiper-container mySwiper">
-            <div class="swiper-wrapper">
-                {% for i in create %}
-                    <div class="swiper-slide">
-                        {% include 'menu_item/menu_item_card.html' with menu_item=i.menuitemvariant_set.last %}
-                    </div>
-                {% endfor %}
-            </div>
-            <div class="swiper-pagination"></div>
+    <hr style="margin-top: 5rem;margin-bottom: 2rem">
+    <div class="row" style="background-color: white;margin: auto;text-align: center">
+        <div class="col-6 col-md-4 home-img-box">
+            <img src="{% static 'base/img/direct1.png' %}">
+            <h5>
+                {% if language == 'fa' %}
+                    ارتباط مستقیم
+                {% else %}
+                    direct link
+                {% endif %}
+            </h5>
+        </div>
+        <div class="col-6 col-md-4 home-img-box">
+            <img src="{% static 'base/img/send.png' %}">
+            <h5>
+                {% if language == 'fa' %}
+                    ارسال به سراسر کشور
+                {% else %}
+                    send from all country
+                {% endif %}
+            </h5>
+        </div>
+        <div class="col-6 col-md-4 home-img-box">
+            <img src="{% static 'base/img/mul.png' %}">
+            <h5>
+                {% if language == 'fa' %}
+                    چند زبانه
+                {% else %}
+                    multi language
+                {% endif %}
+            </h5>
+        </div>
+        <div class="col-6 col-md-4 home-img-box">
+            <img src="{% static 'base/img/on_sop.png' %}">
+            <h5>
+                {% if language == 'fa' %}
+                    پشتیبانی آنلاین
+                {% else %}
+                    online support
+                {% endif %}
+            </h5>
+        </div>
+        <div class="col-6 col-md-4 home-img-box">
+            <img src="{% static 'base/img/corona.png' %}">
+            <h5>
+                {% if language == 'fa' %}
+                    رعایت پروتکل ها
+                {% else %}
+                    follow the protocols
+                {% endif %}
+            </h5>
+        </div>
+        <div class="col-6 col-md-4 home-img-box">
+            <img src="{% static 'base/img/pay.png' %}">
+            <h5>
+                {% if language == 'fa' %}
+                    پرداخت امن
+                {% else %}
+                    safe payment
+                {% endif %}
+            </h5>
         </div>
     </div>
-
+    <hr style="margin-top: 5rem;margin-bottom: 2rem">
+    <div class="row" style="margin: auto;margin-top: 2rem;text-align: center">
+        <h3 style="margin-bottom: 3rem">
+            {% if language == 'fa' %}
+                جدیدترین ها
+            {% else %}
+                Newest
+            {% endif %}
+        </h3>
+        {% for i in create %}
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                {% include 'menu_item/menu_item_card.html' with menu_item=i.menuitemvariant_set.last %}
+            </div>
+        {% endfor %}
+    </div>
+    <hr style="margin-top: 5rem;margin-bottom: 2rem">
+    <div class="row" style="margin: auto;margin-top: 2rem;text-align: center">
+        <h3 style="margin-bottom: 3rem">
+            {% if language == 'fa' %}
+                پر فروش ترین ها
+            {% else %}
+                Best sells
+            {% endif %}
+        </h3>
+        {% for i in most_sell %}
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                {% include 'menu_item/menu_item_card.html' with menu_item=i.menuitemvariant_set.last %}
+            </div>
+        {% endfor %}
+    </div>
     <!-- Swiper JS -->
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
