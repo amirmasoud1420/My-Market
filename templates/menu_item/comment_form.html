@@ -20,7 +20,9 @@
                             <input type="radio" name="rate" value="1" id="1"><label for="1">&star;</label>
                         </div>
                         <div class="comment-box">
-                            <textarea name="comment" rows="4" class="form-control" style="direction: rtl"
+                            <textarea name="comment" rows="4" class="form-control"
+                                      {% if language == 'fa' %}style="direction: rtl"
+                                      {% else %}style="direction: ltr"{% endif %}
                                       required
                                       oninvalid="setCustomValidity({% trans 'this field is required' %})"></textarea>
                         </div>

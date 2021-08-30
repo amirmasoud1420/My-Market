@@ -1,7 +1,8 @@
 {% load i18n %}
 <form method="post" action="{% url 'menu_item_comment_reply' menu_item_variant.id comment.id %}">
     {% csrf_token %}
-    <textarea name="comment" rows="2" class="form-control" style="direction: rtl"
+    <textarea name="comment" rows="2" class="form-control" {% if language == 'fa' %}style="direction: rtl"
+              {% else %}style="direction: ltr"{% endif %}
               placeholder="{% trans 'reply...' %}"
               required oninvalid="setCustomValidity('{% trans 'this field is required' %}')"></textarea>
     <div class="mt-2">
