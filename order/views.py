@@ -24,11 +24,12 @@ class OrderDetailView(LoginRequiredMixin, View):
                 order_during = order.get(status='d')
                 order_during = order_during.ordermenuitem_set.order_by('id')
                 empty = False
-            paginator = Paginator(order_during, 4)
-            page_num = request.GET.get('page')
-            page_obj = paginator.get_page(page_num)
+            # paginator = Paginator(order_during, 4)
+            # page_num = request.GET.get('page')
+            # page_obj = paginator.get_page(page_num)
+            # print(page_obj)
             context = {
-                'order_during': page_obj,
+                'order_during': order_during,
 
                 'empty': empty,
             }
