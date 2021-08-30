@@ -103,9 +103,17 @@
     <ul>
         <li><a href="{% url 'home' %}">{% trans 'Home' %}</a></li>
         <li><a href="{% url 'customer:customer_profile' %}">{% trans 'Profile' %}</a></li>
+        <li><a href="{% url 'change_lang' %}">
+            {% if language == 'fa' %}
+                تغییر زبان &nbsp;  (English)
+            {% else %}
+                change language &nbsp;(فارسی)
+            {% endif %}
+        </a></li>
         <li>{% trans 'Category' %}
             {% include 'base/nav_category.html' with category=category %}
         </li>
+
     </ul>
 </div>
 

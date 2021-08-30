@@ -13,6 +13,16 @@ from django.db.models import Avg, Min, Max
 
 # Create your views here.
 
+class ChangeLanguageView(View):
+    def get(self, request, *args, **kwargs):
+
+        from django.utils.translation import activate, get_language
+        if get_language() == 'en-us':
+            activate('fa')
+        elif get_language() == 'fa':
+            activate('en-us')
+        return redirect('home')
+
 
 class HomeView(View):
     def get(self, request, *args, **kwargs):
