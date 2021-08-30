@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, SuccessURLAllowedHostsMixin
 from django.core.files.storage import default_storage
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from django.views import generic, View
 from .forms import *
@@ -10,6 +10,9 @@ from .models import *
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth import authenticate, login, logout, forms, update_session_auth_hash
 from django.contrib import messages
+from django.core.paginator import Paginator
+from product.models import *
+from order.models import *
 
 
 # Create your views here.
@@ -40,6 +43,10 @@ class CustomerRegisterView(generic.FormView):
         login(self.request, user)
         messages.success(self.request, _('Registration completed successfully'), 'success')
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        kwargs['category'] = Category.objects.filter(is_sub_category=False)
+        return super().get_context_data(**kwargs)
 
 
 # class CustomerLoginView(generic.FormView):
@@ -85,6 +92,10 @@ class CustomerLoginView(LoginView):
             return redirect('customer:customer_login')
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        kwargs['category'] = Category.objects.filter(is_sub_category=False)
+        return super().get_context_data(**kwargs)
+
 
 class CustomerLogoutView(generic.View):
 
@@ -102,17 +113,24 @@ class CustomerProfileView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return Customer.objects.get(user=self.request.user)
 
+    def get_context_data(self, **kwargs):
+        kwargs['category'] = Category.objects.filter(is_sub_category=False)
+        return super().get_context_data(**kwargs)
+
 
 class CustomerProfileUpdateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         user_form = UserUpdateForm(instance=request.user)
         customer_form = CustomerUpdateForm(instance=Customer.objects.get(user=request.user))
-        context = {'user_form': user_form, 'customer_form': customer_form}
+        category = Category.objects.filter(is_sub_category=False)
+        customer = Customer.objects.get(user=self.request.user)
+        context = {'user_form': user_form, 'customer_form': customer_form, 'category': category, 'customer': customer}
         return render(request, 'customer/update.html', context)
 
     def post(self, request, *args, **kwargs):
         user_form = UserUpdateForm(request.POST, instance=request.user)
-        customer_form = CustomerUpdateForm(request.POST, instance=Customer.objects.get(user=request.user))
+        customer_form = CustomerUpdateForm(request.POST, request.FILES,
+                                           instance=Customer.objects.get(user=request.user))
         if user_form.is_valid() and customer_form.is_valid():
             customer_form.save()
             user_form.save()
@@ -127,6 +145,11 @@ class AddressCreateView(LoginRequiredMixin, generic.FormView):
     template_name = 'customer/address_create.html'
     form_class = AddressFormModel
     success_url = reverse_lazy('customer:customer_profile')
+
+    def get_context_data(self, **kwargs):
+        kwargs['customer'] = Customer.objects.get(user=self.request.user)
+        kwargs['category'] = Category.objects.filter(is_sub_category=False)
+        return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
         messages.success(self.request, _('Add address was successful'), 'success')
@@ -148,7 +171,9 @@ class AddressUpdateView(LoginRequiredMixin, View):
             messages.error(self.request, _('No Permission'), 'danger')
             return redirect('customer:customer_profile')
         address_form = AddressFormModel(instance=address)
-        context = {'form': address_form}
+        customer = Customer.objects.get(user=self.request.user)
+        category = Category.objects.filter(is_sub_category=False)
+        context = {'form': address_form, 'customer': customer, 'category': category}
         return render(request, 'customer/update_address.html', context)
 
     def post(self, request, *args, **kwargs):
@@ -178,7 +203,10 @@ class AddressDeleteView(LoginRequiredMixin, View):
 class ChangePasswordView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         form = forms.PasswordChangeForm(request.user)
-        return render(request, 'customer/change_password.html', {'form': form})
+        customer = Customer.objects.get(user=self.request.user)
+        category = Category.objects.filter(is_sub_category=False)
+        return render(request, 'customer/change_password.html',
+                      {'form': form, 'customer': customer, 'category': category})
 
     def post(self, request, *args, **kwargs):
         form = forms.PasswordChangeForm(request.user, request.POST)
@@ -191,3 +219,30 @@ class ChangePasswordView(LoginRequiredMixin, View):
         else:
             messages.error(self.request, _('Password Change failed'), 'danger')
             return redirect('customer:change_password')
+
+
+class FavoritesView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        customer = get_object_or_404(Customer, user=request.user)
+        favorites = customer.favorites.all()
+        paginator = Paginator(favorites, 12)
+        page_num = request.GET.get('page')
+        page_obj = paginator.get_page(page_num)
+        customer = Customer.objects.get(user=self.request.user)
+        category = Category.objects.filter(is_sub_category=False)
+        return render(request, 'customer/favorites.html',
+                      {'favorites': page_obj, 'customer': customer, 'category': category})
+
+
+class OrderListView(generic.ListView):
+    template_name = 'customer/orders.html'
+    context_object_name = 'orders'
+    paginate_by = 20
+
+    def get_queryset(self):
+        return Order.objects.filter(customer__user=self.request.user).order_by('-create_time_stamp')
+
+    def get_context_data(self, **kwargs):
+        kwargs['customer'] = Customer.objects.get(user=self.request.user)
+        kwargs['category'] = Category.objects.filter(is_sub_category=False)
+        return super().get_context_data(**kwargs)

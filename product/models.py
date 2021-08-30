@@ -1,6 +1,4 @@
 from django.db import models
-
-# Create your models here.
 from django.utils.translation import gettext_lazy as _
 
 from core.models import *
@@ -8,6 +6,10 @@ from .validators import *
 from ckeditor_uploader.fields import RichTextUploadingField
 from taggit.managers import TaggableManager
 from django.db.models import Avg, Min, Max
+from customer.models import *
+
+
+# Create your models here.
 
 
 class Category(BaseModel, TimestampMixin):
@@ -15,6 +17,12 @@ class Category(BaseModel, TimestampMixin):
         max_length=50,
         verbose_name=_('Name'),
         help_text=_('Category Name'),
+    )
+    name_fa = models.CharField(
+        max_length=50,
+        verbose_name=_('PersianName'),
+        null=True,
+        blank=True,
     )
     parent = models.ForeignKey(
         'self',
@@ -35,6 +43,10 @@ class Category(BaseModel, TimestampMixin):
 
     def __str__(self):
         return f"{self.id}# {self.name}"
+
+    class Meta:
+        verbose_name = _('Category')
+        verbose_name_plural = _('Categories')
 
 
 class Discount(BaseModel, TimestampMixin):
@@ -89,13 +101,16 @@ class Discount(BaseModel, TimestampMixin):
                 return price - self.price
             else:
                 return 0
-                # raise AssertionError(_('discount price is bigger than product price'))
 
     def __str__(self):
         if self.is_percent:
             return f"{self.id}# {self.percent}% , max = {self.max} , expire-date = {self.expire_date_time} , {self.is_expired()}"
         else:
             return f"{self.id}# {self.price}$ , max = {self.max} , expire-date = {self.expire_date_time} , {self.is_expired()}"
+
+    class Meta:
+        verbose_name = _('Discount')
+        verbose_name_plural = _('Discounts')
 
 
 class OffCode(Discount):
@@ -105,6 +120,10 @@ class OffCode(Discount):
         validators=[off_code_validator],
         help_text=_('Enter the off code'),
     )
+
+    class Meta:
+        verbose_name = _('OffCode')
+        verbose_name_plural = _('OffCodes')
 
 
 """"
@@ -119,9 +138,19 @@ class Brand(BaseModel, TimestampMixin):
         help_text=_('Enter the brand name'),
         # validators=[menu_item_name_validator],
     )
+    name_fa = models.CharField(
+        max_length=50,
+        verbose_name=_('PersianName'),
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
-        return f"{self.id}# {self.name}"
+        return f"{self.name}"
+
+    class Meta:
+        verbose_name = _('Brand')
+        verbose_name_plural = _('Brands')
 
 
 class Image(BaseModel, TimestampMixin):
@@ -137,6 +166,10 @@ class Image(BaseModel, TimestampMixin):
         help_text=_('Enter the menu item for this image'),
     )
 
+    class Meta:
+        verbose_name = _('Image')
+        verbose_name_plural = _('Images')
+
 
 class Specification(BaseModel, TimestampMixin):
     name = models.CharField(
@@ -144,14 +177,30 @@ class Specification(BaseModel, TimestampMixin):
         verbose_name=_('Specification name'),
         help_text=_('Enter the Specification name'),
     )
+    name_fa = models.CharField(
+        max_length=200,
+        verbose_name=_('PersianName'),
+        null=True,
+        blank=True,
+    )
     value = models.CharField(
         max_length=200,
         verbose_name=_('Specification Value'),
         help_text=_('Enter the Specification value'),
     )
+    value_fa = models.CharField(
+        max_length=200,
+        verbose_name=_('PersianValue'),
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return f"{self.id}# {self.name} : {self.value}"
+
+    class Meta:
+        verbose_name = _('Specification')
+        verbose_name_plural = _('Specifications')
 
 
 class VariableSpecification(BaseModel, TimestampMixin):
@@ -169,21 +218,24 @@ class VariableSpecification(BaseModel, TimestampMixin):
     def __str__(self):
         return f"{self.id}# {self.name} : {self.value}"
 
+    class Meta:
+        verbose_name = _('VariableSpecification')
+        verbose_name_plural = _('VariableSpecifications')
+
 
 class MenuItem(BaseModel, TimestampMixin):
     name = models.CharField(
-        max_length=30,
+        max_length=50,
         verbose_name=_('menu item name'),
         help_text=_('Enter the Menu items name'),
-        # validators=[menu_item_name_validator],
-    )
 
-    # category = models.ForeignKey(
-    #     Category,
-    #     on_delete=models.CASCADE,
-    #     verbose_name=_('menu item category'),
-    #     help_text=_('Choose the menu item stock'),
-    # )
+    )
+    name_fa = models.CharField(
+        max_length=50,
+        verbose_name=_('PersianName'),
+        null=True,
+        blank=True,
+    )
     category = models.ManyToManyField(
         Category,
         verbose_name=_('menu item category'),
@@ -207,6 +259,11 @@ class MenuItem(BaseModel, TimestampMixin):
         null=True,
         blank=True,
     )
+    description_fa = RichTextUploadingField(
+        verbose_name=_('PersianDescription'),
+        null=True,
+        blank=True,
+    )
 
     status = models.BooleanField(
         verbose_name=_('variant status'),
@@ -216,7 +273,13 @@ class MenuItem(BaseModel, TimestampMixin):
     variable_specification_name = models.CharField(
         verbose_name=_('Variable Specification name'),
         help_text=_('variable specification name'),
-        max_length=30,
+        max_length=50,
+        null=True,
+        blank=True,
+    )
+    variable_specification_name_fa = models.CharField(
+        verbose_name=_('Variable Specification persian name'),
+        max_length=50,
         null=True,
         blank=True,
     )
@@ -225,6 +288,12 @@ class MenuItem(BaseModel, TimestampMixin):
         help_text=_('for similar product'),
         blank=True,
     )
+    favorites_customers = models.ManyToManyField(
+        Customer,
+        blank=True,
+        related_name='favorites',
+    )
+    sell = models.IntegerField(default=0, verbose_name=_('sell count'))
 
     def my_delete(self):
         super().my_delete()
@@ -247,16 +316,17 @@ class MenuItem(BaseModel, TimestampMixin):
     def __str__(self):
         return f"{self.id}#   {self.name} "
 
+    class Meta:
+        verbose_name = _('MenuItem')
+        verbose_name_plural = _('MenuItems')
+
 
 class MenuItemVariant(BaseModel, TimestampMixin):
     menu_item = models.ForeignKey(
         MenuItem,
         on_delete=models.CASCADE,
     )
-    # variable_specifications = models.ManyToManyField(
-    #     VariableSpecification,
-    #     related_name='menu_item_variants',
-    # )
+
     price = models.IntegerField(
         verbose_name=_('menu item price'),
         help_text=_('Enter the menu item price'),
@@ -279,8 +349,14 @@ class MenuItemVariant(BaseModel, TimestampMixin):
     variable_specification_value = models.CharField(
         verbose_name=_('Variable Specification Value'),
         help_text=_('variable specification value'),
-        max_length=30,
+        max_length=50,
         default=_('Not entered'),
+    )
+    variable_specification_value_fa = models.CharField(
+        verbose_name=_('Variable Specification persian Value'),
+        max_length=50,
+        null=True,
+        blank=True,
     )
     likes = models.ManyToManyField(
         User,
@@ -291,9 +367,12 @@ class MenuItemVariant(BaseModel, TimestampMixin):
     un_likes = models.ManyToManyField(
         User,
         blank=True,
-        verbose_name=_('Un Likes'),
+        verbose_name=_('DisLikes'),
         related_name='menu_item_variants_un_likes',
     )
+
+    def brand(self):
+        return self.menu_item.brand
 
     def total_likes(self):
         return self.likes.count()
@@ -311,6 +390,10 @@ class MenuItemVariant(BaseModel, TimestampMixin):
 
     def __str__(self):
         return f"{self.id}#   {self.menu_item.name} : {self.price} ------> final price = {self.final_price()}"
+
+    class Meta:
+        verbose_name = _('MenuItemVariant')
+        verbose_name_plural = _('MenuItemsVariants')
 
 
 class Comment(BaseModel, TimestampMixin):
@@ -336,6 +419,7 @@ class Comment(BaseModel, TimestampMixin):
         related_name='comment_childes',
     )
     is_reply = models.BooleanField(
+        verbose_name=_('is reply?'),
         default=False,
     )
     likes = models.ManyToManyField(
@@ -364,3 +448,44 @@ class Comment(BaseModel, TimestampMixin):
 
     def __str__(self):
         return f"{self.id}# {self.user.phone} : {self.menu_item.name}"
+
+    class Meta:
+        verbose_name = _('Comment')
+        verbose_name_plural = _('Comments')
+
+
+class Gallery(models.Model):
+    name = models.CharField(
+        verbose_name=_('image name'),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    name_fa = models.CharField(
+        verbose_name=_('image persian name'),
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    description = models.CharField(
+        verbose_name=_('description'),
+        max_length=300,
+        blank=True,
+        null=True,
+    )
+    description_fa = models.CharField(
+        verbose_name=_('Persian description'),
+        max_length=300,
+        blank=True,
+        null=True,
+    )
+    image = models.FileField(
+        verbose_name=_('image'),
+        upload_to='gallery/',
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        verbose_name = _('Image Gallery')
+        verbose_name_plural = _('Image Galleries')

@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View, generic
@@ -23,8 +24,11 @@ class OrderDetailView(LoginRequiredMixin, View):
                 order_during = order.get(status='d')
                 order_during = order_during.ordermenuitem_set.order_by('id')
                 empty = False
+            paginator = Paginator(order_during, 4)
+            page_num = request.GET.get('page')
+            page_obj = paginator.get_page(page_num)
             context = {
-                'order_during': order_during,
+                'order_during': page_obj,
 
                 'empty': empty,
             }
@@ -33,6 +37,8 @@ class OrderDetailView(LoginRequiredMixin, View):
             context = {
                 'empty': empty,
             }
+        category = Category.objects.filter(is_sub_category=False)
+        context['category'] = category
         return render(request, 'order/order.html', context)
 
 
@@ -46,9 +52,12 @@ class CanceledOrderDetailView(LoginRequiredMixin, View):
                 order_canceled = order.filter(status='c')
 
                 empty = False
+            paginator = Paginator(order_canceled, 4)
+            page_num = request.GET.get('page')
+            page_obj = paginator.get_page(page_num)
             context = {
 
-                'order_canceled': order_canceled,
+                'order_canceled': page_obj,
 
                 'empty': empty,
             }
@@ -57,6 +66,8 @@ class CanceledOrderDetailView(LoginRequiredMixin, View):
             context = {
                 'empty': empty,
             }
+        category = Category.objects.filter(is_sub_category=False)
+        context['category'] = category
         return render(request, 'order/canceled_detail.html', context)
 
 
@@ -71,9 +82,12 @@ class PaidOrderDetailView(LoginRequiredMixin, View):
                 order_paid = order.filter(status='p')
 
                 empty = False
+            paginator = Paginator(order_paid, 4)
+            page_num = request.GET.get('page')
+            page_obj = paginator.get_page(page_num)
             context = {
 
-                'order_paid': order_paid,
+                'order_paid': page_obj,
                 'empty': empty,
             }
         else:
@@ -81,6 +95,8 @@ class PaidOrderDetailView(LoginRequiredMixin, View):
             context = {
                 'empty': empty,
             }
+        category = Category.objects.filter(is_sub_category=False)
+        context['category'] = category
         return render(request, 'order/paid_detail.html', context)
 
 
@@ -135,7 +151,8 @@ class OffCodeAddView(LoginRequiredMixin, View):
 
 class AddQuantityView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
-        order = Order.objects.get(customer__user=request.user)
+        order = Order.objects.filter(status='d')
+        order = order.get(customer__user=request.user)
         order_menu_item = OrderMenuItem.objects.get(id=kwargs['pk'])
         if order_menu_item.menu_item_variant.count > 0:
             order_menu_item.quantity += 1
@@ -148,7 +165,8 @@ class AddQuantityView(LoginRequiredMixin, View):
 
 class RemoveQuantityView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
-        order = Order.objects.get(customer__user=request.user)
+        order = Order.objects.filter(status='d')
+        order = order.get(customer__user=request.user)
         order_menu_item = OrderMenuItem.objects.get(id=kwargs['pk'])
         if order_menu_item.quantity > 0:
             order_menu_item.quantity -= 1
@@ -165,7 +183,8 @@ class RemoveQuantityView(LoginRequiredMixin, View):
 
 class RemoveOrderItemView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
-        order = Order.objects.get(customer__user=request.user)
+        order = Order.objects.filter(status='d')
+        order = order.get(customer__user=request.user)
         order_menu_item = OrderMenuItem.objects.get(id=kwargs['pk'])
         order_menu_item.menu_item_variant.count += order_menu_item.quantity
         order_menu_item.menu_item_variant.save()
@@ -224,6 +243,8 @@ class SelectAddress(LoginRequiredMixin, View):
             context = {
                 'is_empty': is_empty,
             }
+        category = Category.objects.filter(is_sub_category=False)
+        context['category'] = category
         return render(request, 'order/select_address.html', context)
 
 
@@ -251,6 +272,9 @@ class PaymentView(LoginRequiredMixin, View):
             i.paid_price = i.final_price()
             i.status = 'p'
             i.save()
+            for j in i.ordermenuitem_set.all():
+                j.menu_item_variant.menu_item.sell += j.quantity
+                j.menu_item_variant.menu_item.save()
         return render(request, 'order/payment.html')
 
 

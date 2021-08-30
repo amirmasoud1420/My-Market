@@ -66,6 +66,10 @@ class Order(BaseModel, TimestampMixin):
     def __str__(self):
         return f"{self.id}# {self.customer.user.phone} : {self.status} : {self.final_price()}"
 
+    class Meta:
+        verbose_name = _('Order')
+        verbose_name_plural = _('Orders')
+
 
 class OrderMenuItem(BaseModel, TimestampMixin):
     order = models.ForeignKey(
@@ -91,3 +95,7 @@ class OrderMenuItem(BaseModel, TimestampMixin):
 
     def __str__(self):
         return f"{self.id}# {self.order}: {self.menu_item_variant} : {self.quantity}"
+
+    class Meta:
+        verbose_name = _('OrderMenuItem')
+        verbose_name_plural = _('OrderMenuItems')

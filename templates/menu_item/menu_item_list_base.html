@@ -2,8 +2,50 @@
 {% load i18n %}
 {% load product_extras %}
 {% block Title %}{% trans 'Produt List' %}{% endblock %}
+{% block ExtraStyle %}
+    <style>
+        .pag {
+            margin-top: 5rem;
+        }
 
+        .slide-range {
+            margin: auto;
+
+        }
+
+        .up-filter {
+            text-align: center;
+            margin: auto;
+            margin-bottom: 3rem;
+            border: 1px solid transparent;
+            border-radius: 5rem;
+            width: 70%;
+            height: 50px;
+            padding: 5px;
+        }
+
+        .up-filter input {
+            height: 40px;
+            margin: auto;
+            width: 120px;
+            background-color: #cdcdcd;
+            border: 1px solid transparent;
+            border-radius: 5rem;
+        }
+    </style>
+{% endblock %}
 {% block Body %}
+
+    <div class="row up-filter">
+        <form>
+            <input type="submit" name="price" value="{% trans 'highest price' %}">
+            <input type="submit" name="price" value="{% trans 'lowest price' %}">
+            <input type="submit" name="create_time_stamp" value="{% trans 'newest' %}">
+            <input type="submit" name="discount" value="{% trans 'most discount' %}">
+            <input type="submit" name="sell" value="{% trans 'bestselling' %}">
+        </form>
+    </div>
+
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
@@ -13,4 +55,22 @@
         </div>
         <div class="col-1"></div>
     </div>
+    <div class="row pag">
+        {% include 'base/pagination.html' with menu_items=menu_items %}
+    </div>
+
+
+    {#    <div class="row">#}
+    {#        <div class="slide-range">#}
+    {#            <form>#}
+    {#                {% include 'menu_item/rage_slider.html' %}#}
+    {#                <label>{% trans 'brand' %}#}
+    {#                    {{ menu_item_filter.form.brand }}#}
+    {#                </label>#}
+    {#                <br>#}
+    {#                <button class="btn btn-danger" type="submit">{% trans 'Filter' %}</button>#}
+    {#            </form>#}
+    {#        </div>#}
+    {#    </div>#}
+
 {% endblock %}

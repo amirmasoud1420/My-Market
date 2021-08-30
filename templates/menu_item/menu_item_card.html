@@ -24,8 +24,30 @@
     <img style="width: auto;height:50%;margin-bottom: 1rem;text-align: center;max-width: 100%"
          src="{% static menu_item.menu_item.image_set.last.image %}">
 
-    <p>{% trans 'Name : ' %}{{ menu_item.menu_item.name }}</p>
-    <p>{% trans 'Brand : ' %}{{ menu_item.menu_item.brand.name }}</p>
+    <p>{% trans 'Name : ' %}
+        {% if language == 'fa' %}
+            {% if menu_item.menu_item.name_fa %}
+                {{ menu_item.menu_item.name_fa }}
+            {% else %}
+                {{ menu_item.menu_item.name }}
+            {% endif %}
+        {% else %}
+            {{ menu_item.menu_item.name }}
+        {% endif %}
+
+    </p>
+    <p>{% trans 'Brand : ' %}
+        {% if language == 'fa' %}
+            {% if menu_item.menu_item.brand.name_fa %}
+                {{ menu_item.menu_item.brand.name_fa }}
+            {% else %}
+                {{ menu_item.menu_item.brand.name }}
+            {% endif %}
+        {% else %}
+            {{ menu_item.menu_item.brand.name }}
+        {% endif %}
+
+    </p>
     {% if menu_item.discount %}
         {% if not menu_item.discount.is_expired %}
             <p style="text-decoration: line-through;color: red">

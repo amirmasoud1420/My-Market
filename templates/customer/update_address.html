@@ -1,19 +1,24 @@
-{% extends 'base/base.html' %}
+{#{% extends 'base/base.html' %}#}
+{% extends 'customer/profile.html' %}
 {% load static %}
 {% load i18n %}
 {% block Title %}{% trans 'Update Address' %}{% endblock %}
 {% block ExtraHead %}
     <link rel="stylesheet" href="{% static 'customer/css/register.css' %}">
 {% endblock %}
-{% block ExtraStyle %}
+{% block ExtraStyle1 %}
     <style>
-        form label {
+        .my-form form label {
             display: block;
             color: yellow;
         }
+
+        .my-form form textarea {
+            width: 300px;
+        }
     </style>
 {% endblock %}
-{% block Body %}
+{% block Profile %}
     <div class="my-form">
         <form method="post">
             {% csrf_token %}

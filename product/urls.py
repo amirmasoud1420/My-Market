@@ -14,4 +14,5 @@ urlpatterns = [
     path('comment-like/<int:pk>/', CommentLikeView.as_view(), name='comment_like'),
     path('comment-unlike/<int:pk>/', CommentUnLikeView.as_view(), name='comment_unlike'),
     path('product-serach/', ProductSearchView.as_view(), name='product_search'),
+    path('favorite/<int:pk>/', FavoritesAddView.as_view(), name='add_favorites'),
 ]

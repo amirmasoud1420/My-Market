@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'taggit',
+    'sorl.thumbnail',
+    'django_filters',
 
     'core',
     'product',
@@ -58,6 +60,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'core.middleware.TimeMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'My_Market.urls'
@@ -74,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.my_contexts',
             ],
         },
     },
@@ -124,6 +128,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+LANGUAGES = (
+    ('en-us', 'English'),
+    ('fa', 'Persian'),
+)
+
 TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
@@ -145,6 +154,8 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOCALE_PATHS = [BASE_DIR / 'locale']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
@@ -206,10 +217,10 @@ LOGGING = {
         },
     },
 }
-
-LOGIN_URL = '/customer/login/'
+from django.urls import reverse_lazy
+LOGIN_URL = reverse_lazy('customer:customer_login')
 # LOGIN_REDIRECT_URL = '/customer/profile/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = reverse_lazy('home')
 
 CKEDITOR_UPLOAD_PATH = 'ck/'
 CKEDITOR_CONFIGS = {

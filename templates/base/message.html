@@ -2,7 +2,7 @@
         crossorigin="anonymous"></script>
 {% if messages %}
     {% for msg in messages %}
-        <h3 {% if msg.tags %} class="message alert alert-{{ msg.tags }}" {% endif %} >{{ msg }}</h3>
+        <h4 style="text-align: center" {% if msg.tags %} class="message alert alert-{{ msg.tags }}" {% endif %} >{{ msg }}</h4>
     {% endfor %}
 {% endif %}
 

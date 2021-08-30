@@ -1,7 +1,11 @@
 {% load static %}
 {% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+{% if language == 'fa' %}
+    <html lang="fa" dir="rtl">
+{% else %}
+    <html lang="en">
+{% endif %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,12 +18,18 @@
           href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
+    <link rel='stylesheet' href='https://sachinchoolur.github.io/lightslider/dist/css/lightslider.css'>
     {% block ExtraHead %}{% endblock %}
 </head>
 <style>
     body, h1, h2, h3, h4, h5 {
+    {% if language == 'fa' %}
+        font-family: IRANSans;
+    {% else %}
         font-family: "Raleway", sans-serif
+    {% endif %}
     }
 
     body {
@@ -32,14 +42,15 @@
         background-color: #cfcfcf;
         text-align: center;
     }
-    #middle-search input:focus{
+
+    #middle-search input:focus {
         background-color: white;
     }
 
     #middle-search button {
         border-radius: 5px;
         border: 8px solid transparent;
-        background-color:green;
+        background-color: green;
         color: white;
         text-align: center;
         width: 100px;
@@ -60,7 +71,8 @@
     {% block OffCode %}{% endblock %}
 
     {# header#}
-    <div class="row" style="height: 80px;background-color: var(--header);padding-right: 0;padding-left: 2.5rem">
+    <div class="row"
+         style="height: 80px;background-color: var(--header);padding-right: 0;padding-left: 2.5rem;direction: ltr">
 
         <div class="col-2 col-md-1 col-lg-1" style="text-align: center">
             <a href="{% url 'order:order_detail' %}">
@@ -83,7 +95,8 @@
             <form id="middle-search" method="post" action="{% url 'product_search' %}">
                 {% csrf_token %}
 
-                <input type="text" name="key" maxlength="30" required="" id="id_key"
+                <input {% if language == 'fa' %}style="direction: rtl" {% endif %}type="text" name="key" maxlength="30"
+                       required="" id="id_key"
                        placeholder="{% trans 'search...' %}">
                 <button type="submit">{% trans 'Search' %}</button>
             </form>
@@ -99,8 +112,8 @@
 
     </div>
     {% block Navbar %}
-        <div class="row" {% if not messages %}
-             style="margin-bottom: 3rem"{% endif %}>{% include 'base/navbar.html' %}</div>
+        <div class="row base-nav" {% if not messages %}
+             style="margin-bottom: 3rem"{% endif %}>{% include 'base/navbar.html' with category=category %}</div>
     {% endblock %}
     {% block Messages %}
         <div class="row" style="margin-bottom: 3rem">{% include 'base/message.html' %}</div>{% endblock %}
@@ -150,7 +163,7 @@
     </div>
     {#    footer#}
 </div>
-
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </body>
 
 </html>

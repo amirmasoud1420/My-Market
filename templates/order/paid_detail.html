@@ -41,13 +41,18 @@
             text-align: center;
         }
 
+        .order-price {
+            font-size: 1.5rem;
+            color: greenyellow;
+        }
+
     </style>
 {% endblock %}
 {% block Body %}
 
     {% if empty %}
         <div style="margin:auto;text-align: center">
-            <h1 style="margin:auto;text-align: center;font-family: Andalus;color: #052953">{% trans 'You dont have any paid orders' %}</h1>
+            <h1 style="margin:auto;text-align: center;{% if language == 'fa' %}font-family: IRANSans;{% else %}font-family: Andalus;{% endif %};color: #052953">{% trans 'You dont have any paid orders' %}</h1>
         </div>
 
     {% else %}
@@ -59,7 +64,18 @@
                 {% for i in j.ordermenuitem_set.all %}
                     <div class="c-order-box-in col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                         <img src="{% static i.menu_item_variant.menu_item.image_set.last.image %}">
-                        <p>{{ i.menu_item_variant.menu_item.name }}</p>
+                        <p>
+                            {% if language == 'fa' %}
+                                {% if i.menu_item_variant.menu_item.name_fa %}
+                                    {{ i.menu_item_variant.menu_item.name_fa }}
+                                {% else %}
+                                    {{ i.menu_item_variant.menu_item.name }}
+                                {% endif %}
+                            {% else %}
+                                {{ i.menu_item_variant.menu_item.name }}
+                            {% endif %}
+
+                        </p>
                         <p>{% trans 'quantity :' %}&nbsp;{{ i.quantity }}</p>
                         <p>{% trans 'final price : ' %}&nbsp;{{ i.final_price }}</p>
                     </div>
@@ -69,10 +85,13 @@
                 <p class="order-price">{% trans 'Final Price :' %}&nbsp;{{ j.paid_price }}&nbsp;{% trans 'Toman' %}</p>
             </div>
         {% endfor %}
-
+        <div class="row pag">
+            {% include 'base/pagination.html' with menu_items=order_paid %}
+        </div>
     {% endif %}
+
     <div class="div-cart">
-        <a class="btn btn-primary but-cart" href="{% url 'order:canceled_order_detail' %}">canceled</a>
-        <a class="btn btn-primary but-cart" href="{% url 'order:order_detail' %}">cart</a>
+        <a class="btn btn-primary but-cart" href="{% url 'order:canceled_order_detail' %}">{% trans 'canceled' %}</a>
+        <a class="btn btn-primary but-cart" href="{% url 'order:order_detail' %}">{% trans 'Cart' %}</a>
     </div>
 {% endblock %}
