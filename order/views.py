@@ -286,4 +286,7 @@ class CancelOrderView(LoginRequiredMixin, View):
             i.paid_price = i.final_price()
             i.status = 'c'
             i.save()
+            for j in i.ordermenuitem_set.all():
+                j.menu_item_variant.count += j.quantity
+                j.menu_item_variant.save()
         return redirect('order:canceled_order_detail')
